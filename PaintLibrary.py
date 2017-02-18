@@ -18,11 +18,18 @@ def saveImage(image):
 
 # higher level of functions
 
+def writeTitle(title):
+	return
+
 def paintCell(image, position):
-	space = 40*(position + 1)
+	space = 50*(position + 1)
 	position *= 60
 	for step in range(0,60,10):
 		paintLine(image, 25, step + position + space, 925, step + position + space)
 
 	for step in range(25,1150,225):
 		paintLine(image, step, position + space, step, position + space + 50)
+
+def paintTabs(image, data):
+	for row in data:
+		
