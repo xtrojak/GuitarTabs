@@ -5,5 +5,5 @@ inputFile = sys.argv[-1]
 
 data, num = parseInput(inputFile)
 Image = prepareOutputPicture(num)
-paintText(Image, 10, 10, 'a')
+paintTabs(Image, data)
 saveImage(Image)

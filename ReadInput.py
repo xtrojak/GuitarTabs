@@ -9,14 +9,14 @@ def prepareOutputPicture(num):
 
 def parseNotes(notes): # max is 6
 	notes = notes.split(".")
-	return map(lambda note: tuple(note.split("/")), notes)
+	return map(lambda note: tuple(note.split("/")), notes)[:6]
 
 def parseBar(bar): # max is 8
 	bar = bar.split()
-	return map(lambda notes: parseNotes(notes), bar)
+	return map(lambda notes: parseNotes(notes), bar)[:8]
 
 def parseLine(line): # max is 4
-	return map(lambda bar: parseBar(bar), line)
+	return map(lambda bar: parseBar(bar), line)[:4]
 
 def parseInput(inputFile):
 	bars = []
