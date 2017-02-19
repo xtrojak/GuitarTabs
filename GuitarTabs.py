@@ -30,13 +30,12 @@ def createButton(it, text, movex, connectWith):
 def createChecker(it, movex, text, isChecked, connectWith):
     checker = QCheckBox(text, it)
     checker.stateChanged.connect(connectWith)
-    checker.setChecked(isChecked)
     checker.move(movex, 320)
     return checker
 
 class CreateWidget(QWidget):
     def __init__(self, parent):        
-        super(CreateWidget, self).__init__(parent)
+        QtGui.QWidget.__init__(self, parent)
 
         self.textBox = QTextEdit(self)
         self.textBox.resize(600, 300)
@@ -44,25 +43,33 @@ class CreateWidget(QWidget):
         self.textBox.textChanged.connect(self.textEdited)
 
         self.checkTabs = createChecker(self, 10, "Tabs", True, self.checkedTabs)
+        # self.checkTabs.setCheckState(QtCore.Qt.Checked) why error?
         self.checkTones = createChecker(self, 70, "Tones", False, self.checkedTones) 
         self.checkBars = createChecker(self, 170, "Enumerate bars", False, self.checkedBars)
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
         self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
 
     def checkedTabs(self):
-        return
+        if self.checkTabs.isChecked():
+            self.checkTones.setCheckState(False)
 
     def checkedTones(self):
-        return
+        if self.checkTones.isChecked():
+            self.checkTabs.setCheckState(False)
 
     def checkedBars(self):
         return
 
     def clickedShowScale(self):
-        return
+        print self.textBox.toPlainText()
 
     def clickedShowTabs(self):
-        return
+        data, num = parseInput(self.textBox.toPlainText())
+        Image = prepareOutputPicture(num)
+        paintTabs(Image, data)
+        drawBarNumbers(Image, num)
+        writeTitle(Image, 'This is a long title which should be centered really?')
+        saveImage(Image)
 
     def textEdited(self):
         if self.textBox.toPlainText():
@@ -97,11 +104,12 @@ class MainWindow(QtGui.QMainWindow):
         fileMenu.addAction(self.save)
 
     def loadTabs(self):
-        self.MainWidget.textBox.setPlainText("test")
+        file = open(QFileDialog.getOpenFileName(self, 'Choose tab file', directory = '~/'), "r")
+        self.MainWidget.textBox.setPlainText(file.read())
 
     def saveTabs(self):
-        print self.MainWidget.textBox.toPlainText()
-
+        with open(QFileDialog.getSaveFileName(self, 'Choose tab file'), 'w') as file:
+            file.write(self.MainWidget.textBox.toPlainText())
 
         #self.dialogTextBrowser = MyDialog(self)
 

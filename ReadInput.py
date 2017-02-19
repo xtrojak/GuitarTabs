@@ -18,18 +18,16 @@ def parseBar(bar): # max is 8
 def parseLine(line): # max is 4
 	return map(lambda bar: parseBar(bar), line)[:4]
 
-def parseInput(inputFile):
+def parseInput(inputData):
 	bars = []
+	toParse = []
 	lineNum = 1
-	with open(inputFile) as lines:
-		toParse = []
-		for line in lines:
-			line = line.rstrip().replace("\"", "")
-			if not line:
-				lineNum += 1
-				bars.append(parseLine(toParse))
-				toParse = []
-			else:
-				toParse.append(line)
-		bars.append(parseLine(toParse))
+	for line in str(inputData).split("\n"):
+		if not line:
+			lineNum += 1
+			bars.append(parseLine(toParse))
+			toParse = []
+		else:
+			toParse.append(line)
+	bars.append(parseLine(toParse))
 	return bars, lineNum
