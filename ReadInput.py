@@ -2,10 +2,10 @@ from PaintLibrary import *
 
 def prepareOutputPicture(num):
 	size = 50*(num-1) + 60*(num + 1)
-	Image = createImage('pic.svg', size)
+	Image = createImage('tabs.svg', size)
 	for i in range(num):
 		paintCell(Image, i)
-	return Image
+	return Image, size
 
 def parseNotes(notes): # max is 6
 	notes = notes.split(".")
