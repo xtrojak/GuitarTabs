@@ -2,17 +2,18 @@ from PyQt4 import QtCore, QtGui, QtSvg
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from ReadInput import *
+from subprocess import call
 
 SVGname = 'tabs.svg'
 PNGname = 'tabs.png'
+PDFname = 'tabs.pdf'
 
-def convertSvgToPng(svgFile, pngFile, width, height):
-    r = QSvgRenderer(svgFile)
-    i = QImage(width, height, QImage.Format_ARGB32_Premultiplied)
-    p = QPainter(i)
-    r.render(p)
-    i.save(pngFile)
-    p.end()
+def convertSvgToPng(sizeX, sizeY):
+    call(["rsvg", "-f", "pdf", SVGname, PDFname])
+    #call(["rm", SVGname])
+    call(["convert", "-density", "200", PDFname, PNGname])
+    #call(["rm", PDFname])
+
 
 class MyPopup(QWidget):
     def __init__(self):
@@ -20,7 +21,9 @@ class MyPopup(QWidget):
 
     def paintEvent(self, e):
         qp = QPainter(self)
-        qp.drawPixmap(0, 0, QPixmap(PNGname))
+        pixmap = QtGui.QPixmap(PNGname)
+        pixmap2 = pixmap.scaled(950, 450)
+        qp.drawPixmap(0, 0, pixmap2)
 
 def createButton(it, text, movex, connectWith):
     button = QtGui.QPushButton(text, it)
@@ -75,7 +78,7 @@ class CreateWidget(QWidget):
         writeTitle(Image, 'This is a long title which should be centered really?')
         saveImage(Image)
 
-        convertSvgToPng(SVGname, PNGname, sizeX, sizeY)
+        convertSvgToPng(sizeX, sizeY)
 
         self.widget = MyPopup()
         self.widget.setGeometry(QRect(0, 0, sizeX, sizeY + 50))
