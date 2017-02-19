@@ -8,8 +8,8 @@ POSITION = 60
 def paintLine(image, fromX, fromY, toX, toY):
 	image.add(image.line((fromX, fromY), (toX, toY), stroke='rgb(170,170,170)'))
 
-def paintText(image, posX, poY, text):
-    image.add(image.text(text, insert=(posX, poY), fill="black", style = "font-size:13px; font-family:Arial"))
+def paintText(image, posX, posY, text, color):
+    image.add(image.text(text, insert=(posX, posY), fill=color, style = "font-size:13px; font-family:Arial"))
 
 def createImage(fileName, size):
 	image = svgwrite.Drawing(filename=fileName, size=(950, size), debug=True)
@@ -26,8 +26,19 @@ def handleNote(string, row, bar, note):
 	posY = row*POSITION + SPACE*(row + 1) + (int(string))*10 - 5
 	return posX, posY
 
-def writeTitle(title):
-	return
+def writeTitle(image, title):
+	posX = 475 - len(title)*3
+	posY = 20
+	paintText(image, posX, posY, title, "black")
+
+def drawBarNumbers(image, num):
+	number = 1
+	for i in range(num):
+		for step in range(30, 930, 225):
+			posX = step
+			posY = POSITION*(i + 1) + SPACE*i - 15
+			paintText(image, posX, posY, number, 'rgb(170,170,170)')
+			number += 1
 
 def paintCell(image, position):
 	space = SPACE*(position + 1)
@@ -44,4 +55,4 @@ def paintTabs(image, data):
 			for note in range(len(data[row][bar])): # max is 8
 				for (number, string) in data[row][bar][note]:
 					posX, posY = handleNote(string, row, bar, note)
-					paintText(image, posX, posY, number)
+					paintText(image, posX, posY, number, "black")
