@@ -3,6 +3,8 @@ from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from ReadInput import *
 from subprocess import call
+from popplerqt4 import Poppler
+
 
 SVGname = 'tabs.svg'
 PNGname = 'tabs.png'
@@ -22,10 +24,8 @@ class MyPopup(QWidget):
 
         self.setFixedHeight(500)
         self.setFixedWidth(1020)
-         
-        #Container Widget        
+               
         widget = QWidget()
-        #Layout of Container Widget
         layout = QVBoxLayout(self)
 
         thumb = QtGui.QLabel()
@@ -34,16 +34,19 @@ class MyPopup(QWidget):
 
         widget.setLayout(layout)
  
-        #Scroll Area Properties
         scroll = QScrollArea()
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        #scroll.setWidgetResizable(False)
+        scroll.setWidgetResizable(True)
         scroll.setWidget(widget)
          
-        #Scroll Area Layer add 
         vLayout = QVBoxLayout(self)
         vLayout.addWidget(scroll)
+        
+        button = QtGui.QPushButton("test", self)
+        button.resize(100, 30)
+        vLayout.addWidget(button)
+
         self.setLayout(vLayout)
 
 
