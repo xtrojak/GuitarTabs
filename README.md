@@ -9,5 +9,4 @@ empty line means new line (in the picture)
 what needed:
 get librsvg2-bin
 get imagemagick
-
-http://www.swharden.com/wp/2013-06-03-realtime-image-pixelmap-from-numpy-array-data-in-qt/
+get python-poppler-qt4

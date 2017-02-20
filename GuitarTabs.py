@@ -5,51 +5,6 @@ from ReadInput import *
 from subprocess import call
 from popplerqt4 import Poppler
 
-
-SVGname = 'tabs.svg'
-PNGname = 'tabs.png'
-PDFname = 'tabs.pdf'
-
-def convertSvgToPng(sizeX, sizeY):
-    call(["rsvg", "-f", "pdf", SVGname, PDFname])
-    #call(["rm", SVGname])
-    call(["convert", "-density", "200", PDFname, PNGname])
-    #call(["rm", PDFname])
-    size = str(sizeX) + "x" + str(sizeY)
-    call(["convert", "-resize", size, PNGname, PNGname])
-
-class MyPopup(QWidget):
-    def __init__(self, parent= None):
-        super(MyPopup, self).__init__()
-
-        self.setFixedHeight(500)
-        self.setFixedWidth(1020)
-               
-        widget = QWidget()
-        layout = QVBoxLayout(self)
-
-        thumb = QtGui.QLabel()
-        thumb.setPixmap(QtGui.QPixmap(PNGname))
-        layout.addWidget(thumb)
-
-        widget.setLayout(layout)
- 
-        scroll = QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(widget)
-         
-        vLayout = QVBoxLayout(self)
-        vLayout.addWidget(scroll)
-        
-        button = QtGui.QPushButton("test", self)
-        button.resize(100, 30)
-        vLayout.addWidget(button)
-
-        self.setLayout(vLayout)
-
-
 def createButton(it, text, movex, connectWith):
     button = QtGui.QPushButton(text, it)
     button.clicked.connect(connectWith)
@@ -63,6 +18,53 @@ def createChecker(it, movex, text, isChecked, connectWith):
     checker.stateChanged.connect(connectWith)
     checker.move(movex, 320)
     return checker
+
+SVGname = 'tabs.svg'
+PDFname = 'tabs.pdf'
+
+def convertSvgToPng(sizeX, sizeY):
+    call(["rsvg", "-f", "pdf", SVGname, PDFname])
+    call(["rm", SVGname])
+
+class MyPopup(QWidget):
+    def __init__(self, parent= None):
+        super(MyPopup, self).__init__()
+
+        self.setFixedHeight(500)
+        self.setFixedWidth(1010)
+
+        doc = Poppler.Document.load(PDFname)
+        doc.setRenderHint(Poppler.Document.Antialiasing)
+        doc.setRenderHint(Poppler.Document.TextAntialiasing)
+        page = doc.page(0)
+        self.image = page.renderToImage()
+
+        thumb = QtGui.QLabel()
+        thumb.setPixmap(QtGui.QPixmap.fromImage(self.image))
+ 
+        scroll = QScrollArea()
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(thumb)
+         
+        vLayout = QVBoxLayout(self)
+        vLayout.addWidget(scroll)
+        
+        buttonSave = QtGui.QPushButton("Save tabs", self)
+        buttonSave.clicked.connect(self.saveTabs)
+        vLayout.addWidget(buttonSave)
+
+        buttonExit = QtGui.QPushButton("Exit", self)
+        buttonExit.clicked.connect(self.close)
+        vLayout.addWidget(buttonExit)
+
+        self.setLayout(vLayout)
+
+    def saveTabs(self):
+        with open(QFileDialog.getSaveFileName(self, 'Choose file', filter =".png (*.png)"), 'w') as file:
+            file = str(file).split("u'")[1].split("')")[0]
+            self.image.save(QtCore.QString(file))
 
 class CreateWidget(QWidget):
     def __init__(self, parent):        
@@ -133,12 +135,18 @@ class MainWindow(QtGui.QMainWindow):
         self.save.setStatusTip('Save tabs to a file.')
         self.save.triggered.connect(self.saveTabs)
 
+        self.exit = QtGui.QAction("&Exit", self)
+        self.exit.setShortcut("Ctrl+E")
+        self.exit.setStatusTip('Exit program.')
+        self.exit.triggered.connect(self.close)
+
         self.statusBar()
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(self.load)
         fileMenu.addAction(self.save)
+        fileMenu.addAction(self.exit)
 
     def loadTabs(self):
         file = open(QFileDialog.getOpenFileName(self, 'Choose tab file', directory = '~/'), "r")
@@ -147,12 +155,6 @@ class MainWindow(QtGui.QMainWindow):
     def saveTabs(self):
         with open(QFileDialog.getSaveFileName(self, 'Choose tab file'), 'w') as file:
             file.write(self.MainWidget.textBox.toPlainText())
-
-        #self.dialogTextBrowser = MyDialog(self)
-
-#    def on_pushButton_clicked(self):
-#       self.dialogTextBrowser.exec_()
-
 
 if __name__ == "__main__":
     import sys
@@ -166,3 +168,4 @@ if __name__ == "__main__":
     main.show()
 
     sys.exit(app.exec_())
+    call(["rm", PDFname])
