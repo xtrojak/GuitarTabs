@@ -13,17 +13,39 @@ def convertSvgToPng(sizeX, sizeY):
     #call(["rm", SVGname])
     call(["convert", "-density", "200", PDFname, PNGname])
     #call(["rm", PDFname])
-
+    size = str(sizeX) + "x" + str(sizeY)
+    call(["convert", "-resize", size, PNGname, PNGname])
 
 class MyPopup(QWidget):
-    def __init__(self):
-        QWidget.__init__(self)
+    def __init__(self, parent= None):
+        super(MyPopup, self).__init__()
 
-    def paintEvent(self, e):
-        qp = QPainter(self)
-        pixmap = QtGui.QPixmap(PNGname)
-        pixmap2 = pixmap.scaled(950, 450)
-        qp.drawPixmap(0, 0, pixmap2)
+        self.setFixedHeight(500)
+        self.setFixedWidth(1020)
+         
+        #Container Widget        
+        widget = QWidget()
+        #Layout of Container Widget
+        layout = QVBoxLayout(self)
+
+        thumb = QtGui.QLabel()
+        thumb.setPixmap(QtGui.QPixmap(PNGname))
+        layout.addWidget(thumb)
+
+        widget.setLayout(layout)
+ 
+        #Scroll Area Properties
+        scroll = QScrollArea()
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        #scroll.setWidgetResizable(False)
+        scroll.setWidget(widget)
+         
+        #Scroll Area Layer add 
+        vLayout = QVBoxLayout(self)
+        vLayout.addWidget(scroll)
+        self.setLayout(vLayout)
+
 
 def createButton(it, text, movex, connectWith):
     button = QtGui.QPushButton(text, it)
@@ -81,7 +103,6 @@ class CreateWidget(QWidget):
         convertSvgToPng(sizeX, sizeY)
 
         self.widget = MyPopup()
-        self.widget.setGeometry(QRect(0, 0, sizeX, sizeY + 50))
         self.widget.show()
 
     def textEdited(self):
