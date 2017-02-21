@@ -7,7 +7,7 @@ POSITION = 60
 
 def handleNote(string, row, bar, note):
 	posX = 225*bar + (note + 1)*25 + 20
-	posY = row*POSITION + SPACE*(row + 1) + (int(string))*10 - 5
+	posY = row*POSITION + SPACE*(row + 1) + string*10 - 5
 	return posX, posY
 
 def writeTitle(image, title):

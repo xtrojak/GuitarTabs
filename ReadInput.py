@@ -1,36 +1,54 @@
 from PaintLibrary import *
+import collections
 
 def prepareOutputPicture(num):
-	sizeY = 50*(num-1) + 60*(num + 1)
-	Image = createImage('tabs.svg', 950, sizeY)
-	for i in range(num):
-		paintCell(Image, i)
-	return Image, sizeY
+    sizeY = 50*(num-1) + 60*(num + 1)
+    Image = createImage('tabs.svg', 950, sizeY)
+    for i in range(num):
+        paintCell(Image, i)
+    return Image, sizeY
+
+def parseNote(note): # max is tab/string
+    return tuple(map(int, note.split("/")))
 
 def parseNotes(notes): # max is 6
-	notes = notes.split(".")
-	return map(lambda note: tuple(note.split("/")), notes)[:6]
+    notes = notes.split(".")
+    return map(lambda note: parseNote(note), notes)[:6]
 
 def parseBar(bar): # max is 8
-	bar = bar.split()
-	return map(lambda notes: parseNotes(notes), bar)[:8]
+    bar = bar.split()
+    return map(lambda notes: parseNotes(notes), bar)[:8]
 
 def parseLine(line): # max is 4
-	return map(lambda bar: parseBar(bar), line)[:4]
+    return map(lambda bar: parseBar(bar), line)[:4]
 
 def parseInput(inputData):
-	bars = []
-	toParse = []
-	lineNum = 1
-	for line in str(inputData).split("\n"):
-		if not line:
-			lineNum += 1
-			bars.append(parseLine(toParse))
-			toParse = []
-		else:
-			toParse.append(line)
-	bars.append(parseLine(toParse))
-	return bars, lineNum
+    bars = []
+    toParse = []
+    lineNum = 1
+    for line in str(inputData).split("\n"):
+        if not line:
+            lineNum += 1
+            bars.append(parseLine(toParse))
+            toParse = []
+        else:
+            toParse.append(line)
+    bars.append(parseLine(toParse))
+    return bars, lineNum
+
+def flatten(x):
+    if isinstance(x, tuple):
+        return [x]
+    elif isinstance(x, collections.Iterable):
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
 
 def getTones(data):
-	return ["a", "c", "d", "e", "f"]
+    tones = flatten(data)
+    tones = set(filter(lambda (bar, string): bar < 13, tones))
+    size, iterate, tonesBox, tuning = getGuitarAttributes()
+    scale = []
+    for (bar, string) in tones:
+        scale.append(tonesBox[string - 1][bar - 1])
+    return list(set(scale))

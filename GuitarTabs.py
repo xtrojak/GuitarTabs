@@ -162,10 +162,12 @@ class MainWindow(QtGui.QMainWindow):
         fileMenu.addAction(self.save)
         fileMenu.addAction(self.exit)
 
+        self.clear = createAction(self, "&Clear", "Ctrl+L", 'Clear all the text.', self.clearText)
         self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
         self.paste = createAction(self, "&Paste", "Ctrl+P", 'Paste text from clipboard.', self.pasteText)
 
         editMenu = mainMenu.addMenu('&Edit')
+        editMenu.addAction(self.clear)
         editMenu.addAction(self.copy)
         editMenu.addAction(self.paste)
 
@@ -175,12 +177,16 @@ class MainWindow(QtGui.QMainWindow):
         helpMenu.addAction(self.help)
 
     def loadTabs(self):
-        file = open(QFileDialog.getOpenFileName(self, 'Choose tab file', directory = '~/'), "r")
-        self.MainWidget.textBox.setPlainText(file.read())
+        file = QFileDialog.getOpenFileName(self, 'Choose tab file', directory = '~/')
+        if file:
+            file = open(file, "r")
+            self.MainWidget.textBox.setPlainText(file.read())
 
     def saveTabs(self):
-        with open(QFileDialog.getSaveFileName(self, 'Choose tab file'), 'w') as file:
-            file.write(self.MainWidget.textBox.toPlainText())
+        file = QFileDialog.getSaveFileName(self, 'Choose tab file')
+        if file:
+            with open(file, 'w') as file:
+                file.write(self.MainWidget.textBox.toPlainText())
 
     def copySelection(self):
         self.MainWidget.textBox.copy()
@@ -191,6 +197,9 @@ class MainWindow(QtGui.QMainWindow):
     def showHelp(self):
         self.help = Help()
         self.help.show()
+
+    def clearText(self):
+        self.MainWidget.textBox.clear()
 
 if __name__ == "__main__":
     import sys
