@@ -1,11 +1,11 @@
 from PaintLibrary import *
 
 def prepareOutputPicture(num):
-	size = 50*(num-1) + 60*(num + 1)
-	Image = createImage('tabs.svg', size)
+	sizeY = 50*(num-1) + 60*(num + 1)
+	Image = createImage('tabs.svg', 950, sizeY)
 	for i in range(num):
 		paintCell(Image, i)
-	return Image, size
+	return Image, sizeY
 
 def parseNotes(notes): # max is 6
 	notes = notes.split(".")
@@ -31,3 +31,6 @@ def parseInput(inputData):
 			toParse.append(line)
 	bars.append(parseLine(toParse))
 	return bars, lineNum
+
+def getTones(data):
+	return ["a", "c", "d", "e", "f"]

@@ -5,6 +5,11 @@ from ReadInput import *
 from subprocess import call
 from popplerqt4 import Poppler
 
+SVGtabs = 'tabs.svg'
+PDFtabs = 'tabs.pdf'
+SVGtones = 'tones.svg'
+PDFtones = 'tones.pdf'
+
 def createButton(it, text, movex, connectWith):
     button = QtGui.QPushButton(text, it)
     button.clicked.connect(connectWith)
@@ -18,12 +23,9 @@ def createChecker(it, movex, movey, text):
     checker.move(movex, movey)
     return checker
 
-SVGname = 'tabs.svg'
-PDFname = 'tabs.pdf'
-
-def convertSvgToPng(sizeX, sizeY):
-    call(["rsvg", "-f", "pdf", SVGname, PDFname])
-    call(["rm", SVGname])
+def convertSvgToPng(sizeX, sizeY, svg, pdf):
+    call(["rsvg", "-f", "pdf", svg, pdf])
+    call(["rm", svg])
 
 class Help(QWidget):
     def __init__(self, parent= None):
@@ -36,15 +38,15 @@ class Help(QWidget):
         self.titleText = QLabel(self)
         self.titleText.setText("This is help \n blabla \n etc")
 
-class MyPopup(QWidget):
-    def __init__(self, parent= None):
-        super(MyPopup, self).__init__()
+class PopUp(QWidget):
+    def __init__(self, title, Height, Width, picture, useScrollArea):
+        super(PopUp, self).__init__()
 
-        self.setWindowTitle("Tabs")
-        self.setFixedHeight(500)
-        self.setFixedWidth(1010)
+        self.setWindowTitle(title)
+        self.setFixedHeight(Height)
+        self.setFixedWidth(Width)
 
-        doc = Poppler.Document.load(PDFname)
+        doc = Poppler.Document.load(picture)
         doc.setRenderHint(Poppler.Document.Antialiasing)
         doc.setRenderHint(Poppler.Document.TextAntialiasing)
         page = doc.page(0)
@@ -52,18 +54,21 @@ class MyPopup(QWidget):
 
         thumb = QtGui.QLabel()
         thumb.setPixmap(QtGui.QPixmap.fromImage(self.image))
- 
-        scroll = QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(thumb)
-         
+
         vLayout = QVBoxLayout(self)
-        vLayout.addWidget(scroll)
-        
+
+        if useScrollArea:
+            scroll = QScrollArea()
+            scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scroll.setWidgetResizable(True)
+            scroll.setWidget(thumb)
+            vLayout.addWidget(scroll)
+        else:
+            vLayout.addWidget(thumb)
+
         buttonSave = QtGui.QPushButton("Save tabs", self)
-        buttonSave.clicked.connect(self.saveTabs)
+        buttonSave.clicked.connect(self.saveFile)
         vLayout.addWidget(buttonSave)
 
         buttonExit = QtGui.QPushButton("Close", self)
@@ -72,9 +77,9 @@ class MyPopup(QWidget):
 
         self.setLayout(vLayout)
 
-    def saveTabs(self):
-        with open(QFileDialog.getSaveFileName(self, 'Choose file', filter =".png (*.png)"), 'w') as file:
-            file = str(file).split("u'")[1].split("')")[0]
+    def saveFile(self):
+        file = QFileDialog.getSaveFileName(self, 'Choose file', filter =".png (*.png)")
+        if file:
             self.image.save(QtCore.QString(file))
 
 class CreateWidget(QWidget):
@@ -99,7 +104,14 @@ class CreateWidget(QWidget):
         self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
 
     def clickedShowScale(self):
-        print self.textBox.toPlainText()
+        data, num = parseInput(self.textBox.toPlainText())
+        tones = getTones(data)
+        paintTones(tones)
+
+        convertSvgToPng(1060, 400, SVGtones, PDFtones)
+
+        self.widget = PopUp("Scale", 480, 1060, PDFtones, False)
+        self.widget.show()
 
     def clickedShowTabs(self):
         data, num = parseInput(self.textBox.toPlainText())
@@ -111,9 +123,9 @@ class CreateWidget(QWidget):
         writeTitle(Image, self.titleBox.text())
         saveImage(Image)
 
-        convertSvgToPng(sizeX, sizeY)
+        convertSvgToPng(sizeX, sizeY, SVGtabs, PDFtabs)
 
-        self.widget = MyPopup()
+        self.widget = PopUp("Tabs", 500, 1010, PDFtabs, True)
         self.widget.show()
 
     def textEdited(self):
@@ -192,4 +204,3 @@ if __name__ == "__main__":
     main.show()
 
     sys.exit(app.exec_())
-    call(["rm", PDFname])

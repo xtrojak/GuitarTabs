@@ -1,23 +1,7 @@
-import svgwrite
+from PaintTones import *
 
 SPACE = 50
 POSITION = 60
-
-# basic functions
-
-def paintLine(image, fromX, fromY, toX, toY):
-	image.add(image.line((fromX, fromY), (toX, toY), stroke='rgb(170,170,170)'))
-
-def paintText(image, posX, posY, text, color):
-    image.add(image.text(text, insert=(posX, posY), fill=color, style = "font-size:13px; font-family:Arial"))
-
-def createImage(fileName, size):
-	image = svgwrite.Drawing(filename=fileName, size=(950, size), debug=True)
-	image.add(image.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='white'))
-	return image
-
-def saveImage(image):
-	image.save()
 
 # higher level of functions
 
@@ -44,10 +28,10 @@ def paintCell(image, position):
 	space = SPACE*(position + 1)
 	position *= POSITION
 	for step in range(0, POSITION, 10):
-		paintLine(image, 25, step + position + space, 925, step + position + space)
+		paintLine(image, 25, step + position + space, 925, step + position + space, 'rgb(170,170,170)')
 
 	for step in range(25, 1150, 225):
-		paintLine(image, step, position + space, step, position + space + SPACE)
+		paintLine(image, step, position + space, step, position + space + SPACE, 'rgb(170,170,170)')
 
 def paintTabs(image, data):
 	for row in range(len(data)):
