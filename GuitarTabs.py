@@ -13,10 +13,9 @@ def createButton(it, text, movex, connectWith):
     button.setDisabled(True)
     return button
 
-def createChecker(it, movex, text, isChecked, connectWith):
+def createChecker(it, movex, movey, text):
     checker = QCheckBox(text, it)
-    checker.stateChanged.connect(connectWith)
-    checker.move(movex, 320)
+    checker.move(movex, movey)
     return checker
 
 SVGname = 'tabs.svg'
@@ -26,10 +25,22 @@ def convertSvgToPng(sizeX, sizeY):
     call(["rsvg", "-f", "pdf", SVGname, PDFname])
     call(["rm", SVGname])
 
+class Help(QWidget):
+    def __init__(self, parent= None):
+        super(Help, self).__init__()
+
+        self.setWindowTitle("Help")
+        self.setFixedHeight(200)
+        self.setFixedWidth(300)
+
+        self.titleText = QLabel(self)
+        self.titleText.setText("This is help \n blabla \n etc")
+
 class MyPopup(QWidget):
     def __init__(self, parent= None):
         super(MyPopup, self).__init__()
 
+        self.setWindowTitle("Tabs")
         self.setFixedHeight(500)
         self.setFixedWidth(1010)
 
@@ -55,7 +66,7 @@ class MyPopup(QWidget):
         buttonSave.clicked.connect(self.saveTabs)
         vLayout.addWidget(buttonSave)
 
-        buttonExit = QtGui.QPushButton("Exit", self)
+        buttonExit = QtGui.QPushButton("Close", self)
         buttonExit.clicked.connect(self.close)
         vLayout.addWidget(buttonExit)
 
@@ -75,23 +86,17 @@ class CreateWidget(QWidget):
         self.textBox.move(10, 10)
         self.textBox.textChanged.connect(self.textEdited)
 
-        self.checkTabs = createChecker(self, 10, "Tabs", True, self.checkedTabs)
-        # self.checkTabs.setCheckState(QtCore.Qt.Checked) why error?
-        self.checkTones = createChecker(self, 70, "Tones", False, self.checkedTones) 
-        self.checkBars = createChecker(self, 170, "Enumerate bars", False, self.checkedBars)
+        self.titleText = QLabel(self)
+        self.titleText.setText("Title")
+        self.titleText.move(15, 325)
+
+        self.titleBox = QLineEdit(self)
+        self.titleBox.resize(220, 30)
+        self.titleBox.move(50, 320)
+
+        self.checkBars = createChecker(self, 290, 325, "Bar numbers")
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
         self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
-
-    def checkedTabs(self):
-        if self.checkTabs.isChecked():
-            self.checkTones.setCheckState(False)
-
-    def checkedTones(self):
-        if self.checkTones.isChecked():
-            self.checkTabs.setCheckState(False)
-
-    def checkedBars(self):
-        return
 
     def clickedShowScale(self):
         print self.textBox.toPlainText()
@@ -101,8 +106,9 @@ class CreateWidget(QWidget):
         Image, sizeY = prepareOutputPicture(num)
         sizeX = 950
         paintTabs(Image, data)
-        drawBarNumbers(Image, num)
-        writeTitle(Image, 'This is a long title which should be centered really?')
+        if self.checkBars.isChecked():
+            drawBarNumbers(Image, num)
+        writeTitle(Image, self.titleBox.text())
         saveImage(Image)
 
         convertSvgToPng(sizeX, sizeY)
@@ -118,6 +124,13 @@ class CreateWidget(QWidget):
             self.showScale.setDisabled(True)
             self.showTabs.setDisabled(True)
 
+def createAction(it, title, shortcut, tip, connectWith):
+    action = QtGui.QAction(title, it)
+    action.setShortcut(shortcut)
+    action.setStatusTip(tip)
+    action.triggered.connect(connectWith)
+    return action
+
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -125,20 +138,9 @@ class MainWindow(QtGui.QMainWindow):
         self.MainWidget = CreateWidget(self) 
         self.setCentralWidget(self.MainWidget)
 
-        self.load = QtGui.QAction("&Load", self)
-        self.load.setShortcut("Ctrl+L")
-        self.load.setStatusTip('Load tabs from a file.')
-        self.load.triggered.connect(self.loadTabs)
-
-        self.save = QtGui.QAction("&Save", self)
-        self.save.setShortcut("Ctrl+S")
-        self.save.setStatusTip('Save tabs to a file.')
-        self.save.triggered.connect(self.saveTabs)
-
-        self.exit = QtGui.QAction("&Exit", self)
-        self.exit.setShortcut("Ctrl+E")
-        self.exit.setStatusTip('Exit program.')
-        self.exit.triggered.connect(self.close)
+        self.load = createAction(self, "&Load", "Ctrl+L", 'Load tabs from a file.', self.loadTabs)
+        self.save = createAction(self, "&Save", "Ctrl+S", 'Save tabs to a file.', self.saveTabs)
+        self.exit = createAction(self, "&Exit", "Ctrl+E", 'Exit program.', self.close)
 
         self.statusBar()
 
@@ -148,6 +150,18 @@ class MainWindow(QtGui.QMainWindow):
         fileMenu.addAction(self.save)
         fileMenu.addAction(self.exit)
 
+        self.copy = createAction(self, "&Copy", "Ctrl+C", 'Copy selected text to clipboard.', self.copySelection)
+        self.paste = createAction(self, "&Paste", "Ctrl+P", 'Paste text from clipboard.', self.pasteText)
+
+        editMenu = mainMenu.addMenu('&Edit')
+        editMenu.addAction(self.copy)
+        editMenu.addAction(self.paste)
+
+        self.help = createAction(self, "&Hint", "Ctrl+H", 'Show hint how to write tabs.', self.showHelp)
+
+        helpMenu = mainMenu.addMenu('&Help')
+        helpMenu.addAction(self.help)
+
     def loadTabs(self):
         file = open(QFileDialog.getOpenFileName(self, 'Choose tab file', directory = '~/'), "r")
         self.MainWidget.textBox.setPlainText(file.read())
@@ -155,6 +169,16 @@ class MainWindow(QtGui.QMainWindow):
     def saveTabs(self):
         with open(QFileDialog.getSaveFileName(self, 'Choose tab file'), 'w') as file:
             file.write(self.MainWidget.textBox.toPlainText())
+
+    def copySelection(self):
+        self.MainWidget.textBox.copy()
+
+    def pasteText(self):
+        self.MainWidget.textBox.paste()
+
+    def showHelp(self):
+        self.help = Help()
+        self.help.show()
 
 if __name__ == "__main__":
     import sys
