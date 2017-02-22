@@ -4,6 +4,7 @@ from PyQt4.Qt import *
 from ReadInput import *
 from subprocess import call
 from popplerqt4 import Poppler
+import markdown
 
 SVGtabs = 'tabs.svg'
 PDFtabs = 'tabs.pdf'
@@ -32,11 +33,14 @@ class Help(QWidget):
         super(Help, self).__init__()
 
         self.setWindowTitle("Help")
-        self.setFixedHeight(200)
-        self.setFixedWidth(300)
+        self.setFixedHeight(475)
+        self.setFixedWidth(430)
 
         self.titleText = QLabel(self)
-        self.titleText.setText("This is help \n blabla \n etc")
+        self.titleText.move(10, 10)
+        file = open('README.md', "r").read()
+        html = markdown.markdown(file[:-129], extensions=['markdown.extensions.fenced_code'])
+        self.titleText.setText(html)
 
 class PopUp(QWidget):
     def __init__(self, title, Height, Width, picture, useScrollArea):
