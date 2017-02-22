@@ -1,6 +1,8 @@
 # GuitarTabs
 The tool translates tabs in syntax described below to a picture.
 
+Usage: `python GuitarTabs.py`
+
 ### Tabs syntax
 
 Tabs are displayed in a grid with fixed width. 
