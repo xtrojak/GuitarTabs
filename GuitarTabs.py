@@ -93,7 +93,9 @@ class CreateWidget(QWidget):
         self.textBox = QTextEdit(self)
         self.textBox.resize(600, 300)
         self.textBox.move(10, 10)
-        self.textBox.textChanged.connect(self.textEdited)
+        self.textBox.cursorPositionChanged.connect(self.textEdited)
+
+        self.cursor = self.textBox.textCursor()
 
         self.titleText = QLabel(self)
         self.titleText.setText("Title")
@@ -106,6 +108,31 @@ class CreateWidget(QWidget):
         self.checkBars = createChecker(self, 290, 325, "Bar numbers")
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
         self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
+
+        self.format = QtGui.QTextCharFormat()
+        self.format.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+        self.format.setUnderlineColor(QtGui.QColor("red"))
+
+    def checkText(self):
+        outputErrors = checkBorders(str(self.textBox.toPlainText()))
+        print outputErrors
+        
+        for error in outputErrors:
+            print error
+            print self.cursor.hasSelection()
+            print self.cursor.anchor()
+            print self.cursor.position()
+            #
+            self.cursor.setPosition(error)
+            self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
+            print 'end: ', self.cursor.EndOfLine
+            self.cursor.mergeCharFormat(self.format)
+            self.cursor.clearSelection()
+            print 'fix:'
+            print self.cursor.hasSelection()
+            print self.cursor.anchor()
+            print self.cursor.position()
+            print "--------------------"
 
     def clickedShowScale(self):
         data, num = parseInput(self.textBox.toPlainText())
@@ -133,6 +160,7 @@ class CreateWidget(QWidget):
         self.widget.show()
 
     def textEdited(self):
+        self.checkText()
         if self.textBox.toPlainText():
             self.showScale.setDisabled(False)
             self.showTabs.setDisabled(False)
