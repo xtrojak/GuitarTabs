@@ -1,5 +1,6 @@
 from PyQt4 import QtCore, QtGui, QtSvg
 from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 from PyQt4.Qt import *
 from ReadInput import *
 from subprocess import call
@@ -27,6 +28,45 @@ def createChecker(it, movex, movey, text):
 def convertSvgToPng(sizeX, sizeY, svg, pdf):
     call(["rsvg", "-f", "pdf", svg, pdf])
     call(["rm", svg])
+
+class HighlightingRule():
+    def __init__(self, pattern, format):
+        self.pattern = QRegExp(pattern)
+        self.format = format
+
+class MyHighlighter(QSyntaxHighlighter):
+    def __init__(self, parent):
+        QSyntaxHighlighter.__init__(self, parent)
+        self.parent = parent
+        self.highlightingRules = []
+
+        assignmentOperator = QTextCharFormat()
+        assignmentOperator.setForeground(Qt.darkGreen)
+        assignmentOperator.setFontWeight( QFont.Bold )
+        rule = HighlightingRule("\/", assignmentOperator)
+        self.highlightingRules.append(rule)
+
+        assignmentOperator = QTextCharFormat()
+        assignmentOperator.setForeground(Qt.darkGreen)
+        assignmentOperator.setFontWeight( QFont.Bold )
+        rule = HighlightingRule("\.", assignmentOperator)
+        self.highlightingRules.append(rule)
+
+        wrong = QTextCharFormat()
+        wrong.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+        wrong.setUnderlineColor(Qt.red)
+        rule = HighlightingRule("[^0-9\/\.\ ]", wrong)
+        self.highlightingRules.append( rule )
+
+    def highlightBlock( self, text ):
+        for rule in self.highlightingRules:
+            expression = QRegExp( rule.pattern )
+            index = expression.indexIn( text )
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat( index, length, rule.format )
+                index = text.indexOf( expression, index + length )
+        self.setCurrentBlockState( 0 )
 
 class Help(QWidget):
     def __init__(self, parent= None):
@@ -95,7 +135,7 @@ class CreateWidget(QWidget):
         self.textBox.move(10, 10)
         self.textBox.cursorPositionChanged.connect(self.textEdited)
 
-        self.cursor = self.textBox.textCursor()
+        self.highlighter = MyHighlighter( self.textBox )
 
         self.titleText = QLabel(self)
         self.titleText.setText("Title")
@@ -112,27 +152,6 @@ class CreateWidget(QWidget):
         self.format = QtGui.QTextCharFormat()
         self.format.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
         self.format.setUnderlineColor(QtGui.QColor("red"))
-
-    def checkText(self):
-        outputErrors = checkBorders(str(self.textBox.toPlainText()))
-        print outputErrors
-        
-        for error in outputErrors:
-            print error
-            print self.cursor.hasSelection()
-            print self.cursor.anchor()
-            print self.cursor.position()
-            #
-            self.cursor.setPosition(error)
-            self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
-            print 'end: ', self.cursor.EndOfLine
-            self.cursor.mergeCharFormat(self.format)
-            self.cursor.clearSelection()
-            print 'fix:'
-            print self.cursor.hasSelection()
-            print self.cursor.anchor()
-            print self.cursor.position()
-            print "--------------------"
 
     def clickedShowScale(self):
         data, num = parseInput(self.textBox.toPlainText())
@@ -160,7 +179,6 @@ class CreateWidget(QWidget):
         self.widget.show()
 
     def textEdited(self):
-        self.checkText()
         if self.textBox.toPlainText():
             self.showScale.setDisabled(False)
             self.showTabs.setDisabled(False)

@@ -52,21 +52,3 @@ def getTones(data):
     for (bar, string) in tones:
         scale.append(tonesBox[string - 1][bar - 1])
     return list(set(scale))
-
-def checkBorders(inputText):
-    print 'run'
-    outputErrors = []
-    splittedText = inputText.split('\n\n')
-    for block in range(len(splittedText)):
-        lines = splittedText[block].split("\n")
-        for lineNum in range(len(lines)):
-            if lineNum >= 4:
-                outputErrors.append(sum([len(splittedText[i]) for i in range(0, block)]) + \
-                                    sum([len(lines[i]) for i in range(0, lineNum)]) + 1)
-            else:
-                tones = lines[lineNum].split()
-                if len(tones) > 8:
-                    outputErrors.append(sum([len(splittedText[i]) for i in range(0, block)]) + \
-                                        sum([len(lines[i]) for i in range(0, lineNum)]) + \
-                                        sum([len(tones[i]) + 1 for i in range(0,7)]))
-    return outputErrors
