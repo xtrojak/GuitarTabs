@@ -30,9 +30,10 @@ def convertSvgToPng(sizeX, sizeY, svg, pdf):
     call(["rm", svg])
 
 class HighlightingRule():
-    def __init__(self, pattern, format):
+    def __init__(self, pattern, format, weDontWantThis):
         self.pattern = QRegExp(pattern)
         self.format = format
+        self.weDontWantThis = weDontWantThis
 
 class MyHighlighter(QSyntaxHighlighter):
     def __init__(self, parent):
@@ -43,30 +44,36 @@ class MyHighlighter(QSyntaxHighlighter):
         assignmentOperator = QTextCharFormat()
         assignmentOperator.setForeground(Qt.darkGreen)
         assignmentOperator.setFontWeight( QFont.Bold )
-        rule = HighlightingRule("\/", assignmentOperator)
+        rule = HighlightingRule("\/", assignmentOperator, False)
         self.highlightingRules.append(rule)
 
         assignmentOperator = QTextCharFormat()
         assignmentOperator.setForeground(Qt.darkGreen)
         assignmentOperator.setFontWeight( QFont.Bold )
-        rule = HighlightingRule("\.", assignmentOperator)
+        rule = HighlightingRule("\.", assignmentOperator, False)
         self.highlightingRules.append(rule)
 
         wrong = QTextCharFormat()
         wrong.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
         wrong.setUnderlineColor(Qt.red)
-        rule = HighlightingRule("[^0-9\/\.\ ]", wrong)
+        rule = HighlightingRule("[^0-9\/\.\ ]", wrong, True)
         self.highlightingRules.append( rule )
 
-    def highlightBlock( self, text ):
+    def highlightBlock(self, text):
+        self.isOK = True
         for rule in self.highlightingRules:
             expression = QRegExp( rule.pattern )
             index = expression.indexIn( text )
             while index >= 0:
+                if rule.weDontWantThis:
+                    self.isOK = False
                 length = expression.matchedLength()
                 self.setFormat( index, length, rule.format )
                 index = text.indexOf( expression, index + length )
         self.setCurrentBlockState( 0 )
+
+    def checkWhetherOK(self):
+        return self.isOK
 
 class Help(QWidget):
     def __init__(self, parent= None):
@@ -147,11 +154,27 @@ class CreateWidget(QWidget):
 
         self.checkBars = createChecker(self, 290, 325, "Bar numbers")
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
-        self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
+        self.showTabs = createButton(self, "Show tabs", 510, self.checkText)
 
         self.format = QtGui.QTextCharFormat()
         self.format.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
         self.format.setUnderlineColor(QtGui.QColor("red"))
+
+    def checkText(self):
+        self.emit(SIGNAL("clearMessage"))
+
+        if self.highlighter.checkWhetherOK():
+            position, signal = checkNumOfTones(str(self.textBox.toPlainText()))
+            if not position:
+                self.clickedShowTabs()
+            else:
+                self.cursor = self.textBox.textCursor()
+                self.cursor.setPosition(position)
+                self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
+                self.cursor.mergeCharFormat(self.format)
+                self.emit(SIGNAL(signal))
+        else:
+            self.emit(SIGNAL("syntaxError"))
 
     def clickedShowScale(self):
         data, num = parseInput(self.textBox.toPlainText())
@@ -205,6 +228,10 @@ class MainWindow(QtGui.QMainWindow):
         self.exit = createAction(self, "&Exit", "Ctrl+E", 'Exit program.', self.close)
 
         self.statusBar()
+        self.connect(self.MainWidget, SIGNAL("syntaxError"), self.writeSyntaxError)
+        self.connect(self.MainWidget, SIGNAL("tooManyTones"), self.writeTooManyTones)
+        self.connect(self.MainWidget, SIGNAL("tooManyBars"), self.writeTooManyBars)
+        self.connect(self.MainWidget, SIGNAL("clearMessage"), self.clearMessage)
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
@@ -250,6 +277,18 @@ class MainWindow(QtGui.QMainWindow):
 
     def clearText(self):
         self.MainWidget.textBox.clear()
+
+    def writeSyntaxError(self):
+        self.statusBar().showMessage(self.tr("Syntax error."))
+
+    def writeTooManyTones(self):
+        self.statusBar().showMessage(self.tr("Too many tones in one bar (the maximum is 8)."))
+
+    def writeTooManyBars(self):
+        self.statusBar().showMessage(self.tr("Too many bars in one line (the maximum is 4)."))
+
+    def clearMessage(self):
+        self.statusBar().clearMessage()
 
 if __name__ == "__main__":
     import sys

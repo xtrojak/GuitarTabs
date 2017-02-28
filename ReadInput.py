@@ -52,3 +52,21 @@ def getTones(data):
     for (bar, string) in tones:
         scale.append(tonesBox[string - 1][bar - 1])
     return list(set(scale))
+
+def checkNumOfTones(inputText):
+    outputErrors = []
+    lines = inputText.split("\n")
+    sectionNum = 0
+    for lineNum in range(len(lines)):
+        if lines[lineNum]:
+            sectionNum += 1
+        else:
+            sectionNum = 0
+
+        if sectionNum > 4:
+            return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyBars"
+        tones = lines[lineNum].split()
+        if len(tones) > 8:
+            return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyTones"
+
+    return 0, None
