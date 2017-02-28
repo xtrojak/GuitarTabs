@@ -41,23 +41,28 @@ class MyHighlighter(QSyntaxHighlighter):
         self.parent = parent
         self.highlightingRules = []
 
-        assignmentOperator = QTextCharFormat()
-        assignmentOperator.setForeground(Qt.darkGreen)
-        assignmentOperator.setFontWeight( QFont.Bold )
-        rule = HighlightingRule("\/", assignmentOperator, False)
+        allH = QTextCharFormat()
+        allH.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+        allH.setUnderlineColor(Qt.red)
+        rule = HighlightingRule("[^\s]", allH, True)
         self.highlightingRules.append(rule)
 
-        assignmentOperator = QTextCharFormat()
-        assignmentOperator.setForeground(Qt.darkGreen)
-        assignmentOperator.setFontWeight( QFont.Bold )
-        rule = HighlightingRule("\.", assignmentOperator, False)
-        self.highlightingRules.append(rule)
-
-        wrong = QTextCharFormat()
-        wrong.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
-        wrong.setUnderlineColor(Qt.red)
-        rule = HighlightingRule("[^0-9\/\.\ ]", wrong, True)
+        good = QTextCharFormat()
+        good.setForeground(Qt.black)
+        rule = HighlightingRule("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*", good, False)
         self.highlightingRules.append( rule )
+
+        slash = QTextCharFormat()
+        slash.setForeground(Qt.darkGreen)
+        slash.setFontWeight( QFont.Bold )
+        rule = HighlightingRule("\/", slash, False)
+        self.highlightingRules.append(rule)
+
+        dot = QTextCharFormat()
+        dot.setForeground(Qt.darkGreen)
+        dot.setFontWeight( QFont.Bold )
+        rule = HighlightingRule("\.", dot, False)
+        self.highlightingRules.append(rule)
 
     def highlightBlock(self, text):
         self.isOK = True
@@ -69,7 +74,7 @@ class MyHighlighter(QSyntaxHighlighter):
                     self.isOK = False
                 length = expression.matchedLength()
                 self.setFormat( index, length, rule.format )
-                index = text.indexOf( expression, index + length )
+                index = expression.indexIn(text, index + length)
         self.setCurrentBlockState( 0 )
 
     def checkWhetherOK(self):
@@ -202,6 +207,7 @@ class CreateWidget(QWidget):
         self.widget.show()
 
     def textEdited(self):
+        self.emit(SIGNAL("clearMessage"))
         if self.textBox.toPlainText():
             self.showScale.setDisabled(False)
             self.showTabs.setDisabled(False)
