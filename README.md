@@ -7,11 +7,15 @@ Usage: `python GuitarTabs.py`
 
 Tabs are displayed in a grid with fixed width. 
 
-A line is devided into 4 selections, each of them containing up to 8 tones.
+<div align="center">
+  <img src="http://i.imgur.com/S0wQh7f.png"><br><br>
+</div>
+
+A line is devided into 4 selections, each of them containing up to 8 positions.
 
 * tone - s/p (two integers)
 	* s - number of string
-	* b - position on the string
+	* b - number of bar
 * multiple tones on a position - tone.tone. ... .tone
 * next position in a selection - space
 	* up to 8 tones in a selection
@@ -23,8 +27,8 @@ More formally:
 
 ```
 string := integer [1, 6]
-position := integer [1, 20]
-tone := string/position
+bar := integer [1, 20]
+tone := string/bar
 tones := tone.tones | tone
 selection := tones selection | tones
 line := selection \n line | selection
