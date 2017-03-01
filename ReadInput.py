@@ -13,6 +13,8 @@ def prepareOutputPicture(num):
     return Image, sizeY
 
 def parseNote(note): # max is tab/string
+    if note == "-":
+        return (None, None)
     return tuple(map(int, note.split("/")))
 
 def parseNotes(notes): # max is 6
@@ -67,7 +69,7 @@ def checkNumOfTones(inputText):
         else:
             sectionNum = 0
 
-        expression = QRegExp("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*")
+        expression = QRegExp("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*|\-")
         tones = lines[lineNum].split()
         for tone in tones:
             if not expression.exactMatch(tone):

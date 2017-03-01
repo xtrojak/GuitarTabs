@@ -38,5 +38,6 @@ def paintTabs(image, data):
 		for bar in range(len(data[row])): # max is 4
 			for note in range(len(data[row][bar])): # max is 8
 				for (number, string) in data[row][bar][note]:
-					posX, posY = handleNote(string, row, bar, note)
-					paintText(image, posX, posY, number, "black")
+					if number and string:
+						posX, posY = handleNote(string, row, bar, note)
+						paintText(image, posX, posY, number, "black")

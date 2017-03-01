@@ -19,6 +19,7 @@ A line is devided into 4 selections, each of them containing up to 8 positions.
 * multiple tones on a position - tone.tone. ... .tone
 * next position in a selection - space
 	* up to 8 tones in a selection
+	* skip position using -
 * next selection - newline
 	* up to 4 selections
 * next line - 2x newline
@@ -29,8 +30,8 @@ More formally:
 string := integer [1, 6]
 bar := integer [1, 20]
 tone := string/bar
-tones := tone.tones | tone
-selection := tones selection | tones
+position := tone.position | tone
+selection := position selection | position | - selection | -
 line := selection \n line | selection
 lines := line \n\n lines | line
 ```

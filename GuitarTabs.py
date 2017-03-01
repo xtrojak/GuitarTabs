@@ -40,7 +40,7 @@ class MyHighlighter(QSyntaxHighlighter):
         allH = QTextCharFormat()
         allH.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
         allH.setUnderlineColor(Qt.red)
-        rule = HighlightingRule("[^0-9\ \/\.]", allH, True)
+        rule = HighlightingRule("[^0-9\ \/\.\-]", allH, True)
         self.highlightingRules.append(rule)
 
         good = QTextCharFormat()
@@ -58,6 +58,12 @@ class MyHighlighter(QSyntaxHighlighter):
         dot.setForeground(Qt.darkGreen)
         dot.setFontWeight( QFont.Bold )
         rule = HighlightingRule("\.", dot, False)
+        self.highlightingRules.append(rule)
+
+        underscore = QTextCharFormat()
+        underscore.setForeground(Qt.darkGreen)
+        underscore.setFontWeight( QFont.Bold )
+        rule = HighlightingRule("\-", underscore, False)
         self.highlightingRules.append(rule)
 
     def highlightBlock(self, text):
