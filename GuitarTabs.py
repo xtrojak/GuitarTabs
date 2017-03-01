@@ -163,22 +163,28 @@ class CreateWidget(QWidget):
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
         self.showTabs = createButton(self, "Show tabs", 510, self.checkText)
 
-        self.format = QtGui.QTextCharFormat()
-        self.format.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
-        self.format.setUnderlineColor(QtGui.QColor("red"))
+        self.errorFormat = QtGui.QTextCharFormat()
+        self.errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
+        self.errorFormat.setUnderlineColor(QtGui.QColor("red"))
+
+        self.noErroFormat = QtGui.QTextCharFormat()
+        self.noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
 
     def checkText(self):
         self.emit(SIGNAL("clearMessage"))
 
         if self.highlighter.checkWhetherOK():
+            self.cursor = self.textBox.textCursor()
+            self.cursor.setPosition(QTextCursor.Start)
+            self.cursor.movePosition(QTextCursor.End, 1)
+            self.cursor.mergeCharFormat(self.noErroFormat)
             position, signal = checkNumOfTones(str(self.textBox.toPlainText()))
             if position is None:
                 self.clickedShowTabs()
             else:
-                self.cursor = self.textBox.textCursor()
                 self.cursor.setPosition(position)
                 self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
-                self.cursor.mergeCharFormat(self.format)
+                self.cursor.mergeCharFormat(self.errorFormat)
                 self.emit(SIGNAL(signal))
         else:
             self.emit(SIGNAL("syntaxError"))
