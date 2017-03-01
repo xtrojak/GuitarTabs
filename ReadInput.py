@@ -1,3 +1,7 @@
+from PyQt4 import QtCore, QtGui, QtSvg
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from PyQt4.Qt import *
 from PaintLibrary import *
 import collections
 
@@ -63,10 +67,15 @@ def checkNumOfTones(inputText):
         else:
             sectionNum = 0
 
+        expression = QRegExp("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*")
+        tones = lines[lineNum].split()
+        for tone in tones:
+            if not expression.exactMatch(tone):
+                return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "syntaxError"
         if sectionNum > 4:
             return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyBars"
-        tones = lines[lineNum].split()
+        
         if len(tones) > 8:
             return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyTones"
 
-    return 0, None
+    return None, None

@@ -1,7 +1,3 @@
-from PyQt4 import QtCore, QtGui, QtSvg
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from PyQt4.Qt import *
 from ReadInput import *
 from subprocess import call
 from popplerqt4 import Poppler
@@ -44,7 +40,7 @@ class MyHighlighter(QSyntaxHighlighter):
         allH = QTextCharFormat()
         allH.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
         allH.setUnderlineColor(Qt.red)
-        rule = HighlightingRule("[^\s]", allH, True)
+        rule = HighlightingRule("[^0-9\ \/\.]", allH, True)
         self.highlightingRules.append(rule)
 
         good = QTextCharFormat()
@@ -78,7 +74,7 @@ class MyHighlighter(QSyntaxHighlighter):
         self.setCurrentBlockState( 0 )
 
     def checkWhetherOK(self):
-        return self.isOK
+            return self.isOK        
 
 class Help(QWidget):
     def __init__(self, parent= None):
@@ -170,7 +166,7 @@ class CreateWidget(QWidget):
 
         if self.highlighter.checkWhetherOK():
             position, signal = checkNumOfTones(str(self.textBox.toPlainText()))
-            if not position:
+            if position is None:
                 self.clickedShowTabs()
             else:
                 self.cursor = self.textBox.textCursor()
