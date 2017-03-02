@@ -56,7 +56,8 @@ def getTones(data):
     size, iterate, tonesBox, tuning = getGuitarAttributes()
     scale = []
     for (bar, string) in tones:
-        scale.append(tonesBox[string - 1][bar - 1])
+        if bar is not None and string is not None:
+            scale.append(tonesBox[string - 1][bar - 1])
     return list(set(scale))
 
 def checkNumOfTones(inputText):

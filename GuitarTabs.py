@@ -2,6 +2,7 @@ from ReadInput import *
 from subprocess import call
 from popplerqt4 import Poppler
 import markdown
+import os
 
 SVGtabs = 'tabs.svg'
 PDFtabs = 'tabs.pdf'
@@ -23,7 +24,7 @@ def createChecker(it, movex, movey, text):
 
 def convertSvgToPng(sizeX, sizeY, svg, pdf):
     call(["rsvg", "-f", "pdf", svg, pdf])
-    call(["rm", svg])
+    os.remove(svg)
 
 class HighlightingRule():
     def __init__(self, pattern, format, weDontWantThis):
@@ -315,4 +316,16 @@ if __name__ == "__main__":
     main.setWindowTitle('GuitarTabs')
     main.show()
 
-    sys.exit(app.exec_())
+    app.exec_()
+    try:
+        os.remove(PDFtabs)
+    except OSError:
+        pass
+
+    try:
+        os.remove(PDFtones)
+    except OSError:
+        pass
+        
+    sys.exit()
+
