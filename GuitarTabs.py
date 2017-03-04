@@ -98,7 +98,7 @@ class Help(QWidget):
         self.titleText.setText(html)
 
 class PopUp(QWidget):
-    def __init__(self, title, Height, Width, picture, useScrollArea):
+    def __init__(self, title, Height, Width, picture, useScrollArea, saveName):
         super(PopUp, self).__init__()
 
         self.setWindowTitle(title)
@@ -126,7 +126,7 @@ class PopUp(QWidget):
         else:
             vLayout.addWidget(thumb)
 
-        buttonSave = QtGui.QPushButton("Save tabs", self)
+        buttonSave = QtGui.QPushButton(saveName, self)
         buttonSave.clicked.connect(self.saveFile)
         vLayout.addWidget(buttonSave)
 
@@ -162,7 +162,7 @@ class CreateWidget(QWidget):
 
         self.checkBars = createChecker(self, 290, 325, "Bar numbers")
         self.showScale = createButton(self, "Show scale", 400, self.clickedShowScale)
-        self.showTabs = createButton(self, "Show tabs", 510, self.checkText)
+        self.showTabs = createButton(self, "Show tabs", 510, self.clickedShowTabs)
 
         self.errorFormat = QtGui.QTextCharFormat()
         self.errorFormat.setUnderlineStyle(QtGui.QTextCharFormat.WaveUnderline)
@@ -181,7 +181,7 @@ class CreateWidget(QWidget):
             self.cursor.mergeCharFormat(self.noErroFormat)
             position, signal = checkNumOfTones(str(self.textBox.toPlainText()))
             if position is None:
-                self.clickedShowTabs()
+                return True
             else:
                 self.cursor.setPosition(position)
                 self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
@@ -189,31 +189,32 @@ class CreateWidget(QWidget):
                 self.emit(SIGNAL(signal))
         else:
             self.emit(SIGNAL("syntaxError"))
+        return False
 
     def clickedShowScale(self):
-        data, num = parseInput(self.textBox.toPlainText())
-        tones = getTones(data)
-        paintTones(tones)
+        if self.checkText():
+            data, num = parseInput(self.textBox.toPlainText())
+            tones = getTones(data)
+            paintTones(tones)
+            convertSvgToPng(1060, 400, SVGtones, PDFtones)
 
-        convertSvgToPng(1060, 400, SVGtones, PDFtones)
-
-        self.widget = PopUp("Scale", 480, 1060, PDFtones, False)
-        self.widget.show()
+            self.widget = PopUp("Scale", 480, 1060, PDFtones, False, "Save scale")
+            self.widget.show()
 
     def clickedShowTabs(self):
-        data, num = parseInput(self.textBox.toPlainText())
-        Image, sizeY = prepareOutputPicture(num)
-        sizeX = 950
-        paintTabs(Image, data)
-        if self.checkBars.isChecked():
-            drawBarNumbers(Image, num)
-        writeTitle(Image, self.titleBox.text())
-        saveImage(Image)
+        if self.checkText():
+            data, num = parseInput(self.textBox.toPlainText())
+            Image, sizeY = prepareOutputPicture(num)
+            sizeX = 950
+            paintTabs(Image, data)
+            if self.checkBars.isChecked():
+                drawBarNumbers(Image, num)
+            writeTitle(Image, self.titleBox.text())
+            saveImage(Image)
+            convertSvgToPng(sizeX, sizeY, SVGtabs, PDFtabs)
 
-        convertSvgToPng(sizeX, sizeY, SVGtabs, PDFtabs)
-
-        self.widget = PopUp("Tabs", 500, 1010, PDFtabs, True)
-        self.widget.show()
+            self.widget = PopUp("Tabs", 500, 1010, PDFtabs, True, "Save tabs")
+            self.widget.show()
 
     def textEdited(self):
         self.emit(SIGNAL("clearMessage"))
