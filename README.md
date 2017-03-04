@@ -38,7 +38,9 @@ lines := line \n\n lines | line
 
 For an example, see `example.txt` file.
 
-> Dependencies can be installed:
+> Dependencies:
+> python (2.7.x), librsvg2-bin, imagemagick, python-poppler-qt4, python-svgwrite
 
+> If you are using a Ubuntu-like distribution, they can be installed:
 > * sudo apt-get install librsvg2-bin imagemagick python-poppler-qt4
 > * pip install svgwrite
