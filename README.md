@@ -42,5 +42,5 @@ For an example, see `example.txt` file.
 > python (2.7.x), librsvg2-bin, imagemagick, python-poppler-qt4, python-svgwrite
 
 > If you are using a Ubuntu-like distribution, they can be installed:
-> * sudo apt-get install librsvg2-bin imagemagick python-poppler-qt4
+> * sudo apt-get install python2.7 librsvg2-bin imagemagick python-poppler-qt4
 > * pip install svgwrite
