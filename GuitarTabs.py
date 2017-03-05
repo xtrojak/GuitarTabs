@@ -44,11 +44,6 @@ class MyHighlighter(QSyntaxHighlighter):
         rule = HighlightingRule("[^0-9\ \/\.\-]", allH, True)
         self.highlightingRules.append(rule)
 
-        good = QTextCharFormat()
-        good.setForeground(Qt.black)
-        rule = HighlightingRule("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*", good, False)
-        self.highlightingRules.append( rule )
-
         slash = QTextCharFormat()
         slash.setForeground(Qt.darkGreen)
         slash.setFontWeight( QFont.Bold )
@@ -171,6 +166,8 @@ class CreateWidget(QWidget):
         self.noErroFormat = QtGui.QTextCharFormat()
         self.noErroFormat.setUnderlineStyle(QTextCharFormat.NoUnderline)
 
+        self.errorTone = ""
+
     def checkText(self):
         self.emit(SIGNAL("clearMessage"))
 
@@ -182,6 +179,13 @@ class CreateWidget(QWidget):
             position, signal = checkNumOfTones(str(self.textBox.toPlainText()))
             if position is None:
                 return True
+            elif isinstance(position, tuple):
+                self.errorTone = signal
+                self.cursor.setPosition(position[0])
+                for i in range(position[1]):
+                    self.cursor.movePosition(QtGui.QTextCursor.NextCharacter, 1)
+                self.cursor.mergeCharFormat(self.errorFormat)
+                self.emit(SIGNAL("toneError"))
             else:
                 self.cursor.setPosition(position)
                 self.cursor.movePosition(QtGui.QTextCursor.EndOfLine, 1)
@@ -248,6 +252,7 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.MainWidget, SIGNAL("tooManyTones"), self.writeTooManyTones)
         self.connect(self.MainWidget, SIGNAL("tooManyBars"), self.writeTooManyBars)
         self.connect(self.MainWidget, SIGNAL("clearMessage"), self.clearMessage)
+        self.connect(self.MainWidget, SIGNAL("toneError"), self.errorWithTone)
 
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
@@ -305,6 +310,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def clearMessage(self):
         self.statusBar().clearMessage()
+
+    def errorWithTone(self):
+        self.statusBar().showMessage(self.tr("Syntax error: \" " + self.MainWidget.errorTone + " \""))
 
 if __name__ == "__main__":
     import sys

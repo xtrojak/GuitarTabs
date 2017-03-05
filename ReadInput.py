@@ -70,14 +70,20 @@ def checkNumOfTones(inputText):
         else:
             sectionNum = 0
 
-        expression = QRegExp("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*|\-")
-        tones = lines[lineNum].split()
-        for tone in tones:
-            if not expression.exactMatch(tone):
-                return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "syntaxError"
         if sectionNum > 4:
             return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyBars"
-        
+
+        expression = QRegExp("([0-9]+\/[0-9]+)(\.[0-9]+\/[0-9]+)*|\-")
+        tones = lines[lineNum].split(" ")
+
+        for i in range(len(tones)):
+            if tones[i]:
+                if not expression.exactMatch(tones[i]):
+                    startOfLine = sum([len(lines[j]) + 1 for j in range(0,lineNum)])
+                    previousTones = sum([len(tones[j]) + 1 for j in range(0, i)])
+                    return (startOfLine + previousTones, len(tones[i])), tones[i]
+
+        tones = lines[lineNum].split()
         if len(tones) > 8:
             return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyTones"
 
