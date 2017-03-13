@@ -144,6 +144,8 @@ class CreateWidget(QWidget):
         self.textBox.resize(600, 300)
         self.textBox.move(10, 10)
         self.textBox.cursorPositionChanged.connect(self.textEdited)
+        self.textBox.setLineWrapColumnOrWidth(600)
+        self.textBox.setLineWrapMode(QtGui.QTextEdit.FixedColumnWidth)
 
         self.highlighter = MyHighlighter( self.textBox )
 
