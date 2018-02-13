@@ -41,3 +41,21 @@ def paintTabs(image, data):
 					if number is not None and string is not None:
 						posX, posY = handleNote(string, row, bar, note)
 						paintText(image, posX, posY, number, "black")
+"""
+Boundaries hints:
+0: none
+1: start
+2: end
+3: middle
+"""
+def drawComments(image, boundaries, texts):
+	print boundaries, len(boundaries)
+	print texts
+	i = 1
+	while i < len(texts):
+		for step in range(50, 950, 225):
+			posX = step
+			posY = POSITION*((i/4) + 1) + SPACE*(i/4) - 15
+			if texts[i - 1]:
+				paintText(image, posX, posY, texts[i - 1], 'rgb(0,0,0)')
+			i += 1
