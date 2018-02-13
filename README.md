@@ -6,10 +6,10 @@ Usage: `python GuitarTabs.py`
 Tabs are displayed in a grid with fixed width. 
 
 <div align="center">
-  <img src="http://i.imgur.com/S0wQh7f.png"><br><br>
+  <img src="https://raw.githubusercontent.com/mathooo/GuitarTabs/master/pics/front.png"><br><br>
 </div>
 
-```
+```perl
 0/5.2/3 - 3/2.0/6 - 0/3.0/5 - 2/3.1/6 #! Intro start
 2/3.0/6 0/3 5/3 9/3.8/6 7/3 5/3.5/6 4/3 2/3.1/6
 0/5.2/3 - 3/2.0/6 - 0/3.0/5 - 2/3.1/6 #? Intro end
