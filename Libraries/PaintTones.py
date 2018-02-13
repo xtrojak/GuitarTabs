@@ -73,3 +73,14 @@ def paintTones(input_tones):
 
     writeTextUnderPicture(image, 280 + size, input_tones)
     saveImage(image)
+
+def paintStartBoundary(image, fromX, toX, Y):
+    paintLine(image, fromX + 22, Y, toX, Y, 'rgb(170,170,170)')
+    paintLine(image, fromX + 22, Y - 5, fromX + 22, Y + 5, 'rgb(170,170,170)')
+
+def paintEndBoundary(image, fromX, toX, Y):
+    paintLine(image, fromX, Y, toX - 22, Y, 'rgb(170,170,170)')
+    paintLine(image, toX - 22, Y - 5, toX - 22, Y + 5, 'rgb(170,170,170)')
+
+def paintMiddleBoundary(image, fromX, toX, Y):
+    paintLine(image, fromX, Y, toX, Y, 'rgb(170,170,170)')
