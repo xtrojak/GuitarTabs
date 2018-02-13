@@ -46,8 +46,6 @@ line := selection \n line | selection
 lines := line \n\n lines | line
 ```
 
-For an example, see `example.txt` file.
-
 > Dependencies:
 > python (2.7.x), librsvg2-bin, imagemagick, python-poppler-qt4, python-svgwrite
 
