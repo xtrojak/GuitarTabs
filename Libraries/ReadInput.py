@@ -23,7 +23,7 @@ def parseNotes(notes): # max is 6
 
 def parseBar(bar): # max is 8
     bar = bar.split()
-    return map(lambda notes: parseNotes(notes), bar)[:8]
+    return map(lambda notes: parseNotes(notes), bar)
 
 def parseLine(line): # max is 4
     return map(lambda bar: parseBar(bar), line)[:4]
@@ -93,7 +93,7 @@ def checkNumOfTones(inputText):
                     return (startOfLine + previousTones, len(tones[i])), tones[i]
 
         tones = lines[lineNum].split("#")[0].split()
-        if len(tones) > 8:
+        if len(tones) > 13:
             return sum([len(lines[i]) + 1 for i in range(0,lineNum)]), "tooManyTones"
 
     return None, None
