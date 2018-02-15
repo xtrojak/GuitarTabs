@@ -50,13 +50,14 @@ Boundaries hints:
 """
 def drawComments(image, boundaries, texts):
 	i = 1
+	step = 50
 	while i < len(texts):
-		for step in range(50, 950, 225):
-			posX = step
-			posY = POSITION*((i/4) + 1) + SPACE*(i/4) - 15
-			if texts[i - 1]:
-				paintText(image, posX, posY, texts[i - 1][:33], 'rgb(0,0,0)')
-			i += 1
+		posX = step
+		posY = POSITION*((i/4) + 1) + SPACE*(i/4) - 15
+		if texts[i - 1]:
+			paintText(image, posX, posY, texts[i - 1][:33], 'rgb(0,0,0)')
+		step = (step + 225)%900
+		i += 1
 
 	i = 0
 	step = 25
