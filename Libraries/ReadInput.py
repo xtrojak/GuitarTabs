@@ -21,7 +21,7 @@ def parseNotes(notes): # max is 6
     notes = notes.split(".")
     return map(lambda note: parseNote(note), notes)[:6]
 
-def parseBar(bar): # max is 8
+def parseBar(bar): # max is 12
     bar = bar.split()
     return map(lambda notes: parseNotes(notes), bar)
 

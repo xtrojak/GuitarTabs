@@ -39,7 +39,7 @@ def paintCell(image, position):
 def paintTabs(image, data):
 	for row in range(len(data)):
 		for bar in range(len(data[row])): # max is 4
-			for note in range(len(data[row][bar])): # max is 8
+			for note in range(len(data[row][bar])): # max is 12
 				for (number, string) in data[row][bar][note]:
 					if number is not None and string is not None:
 						posX, posY = handleNote(string, row, bar, note, len(data[row][bar]))
