@@ -59,16 +59,17 @@ def drawComments(image, boundaries, texts):
 			i += 1
 
 	i = 0
+	step = 25
 	while i < len(boundaries):
-		for step in range(25, 925, 225):
-			if boundaries[i] != 0:
-				fromX = step
-				toX = step + 225
-				Y = POSITION*((i/4) + 1) + SPACE*(i/4) - 30
-				if boundaries[i] == 1:
-					paintStartBoundary(image, fromX, toX, Y)
-				elif boundaries[i] == 2:
-					paintEndBoundary(image, fromX, toX, Y)
-				elif boundaries[i] == 3:
-					paintMiddleBoundary(image, fromX, toX, Y)
-			i += 1
+		if boundaries[i] != 0:
+			fromX = step
+			toX = step + 225
+			Y = POSITION*((i/4) + 1) + SPACE*(i/4) - 30
+			if boundaries[i] == 1:
+				paintStartBoundary(image, fromX, toX, Y)
+			elif boundaries[i] == 2:
+				paintEndBoundary(image, fromX, toX, Y)
+			elif boundaries[i] == 3:
+				paintMiddleBoundary(image, fromX, toX, Y)
+		step = (step + 225)%900
+		i += 1
