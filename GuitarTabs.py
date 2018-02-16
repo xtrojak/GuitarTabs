@@ -319,7 +319,7 @@ class MainWindow(QtGui.QMainWindow):
 		self.statusBar().showMessage(self.tr("Syntax error."))
 
 	def writeTooManyTones(self):
-		self.statusBar().showMessage(self.tr("Too many tones in one bar (the maximum is 12)."))
+		self.statusBar().showMessage(self.tr("Too many tones in one bar (the maximum is 10)."))
 
 	def writeTooManyBars(self):
 		self.statusBar().showMessage(self.tr("Too many bars in one line (the maximum is 4)."))

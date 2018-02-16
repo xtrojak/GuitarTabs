@@ -6,10 +6,7 @@ POSITION = 60
 # higher level of functions
 
 def handleNote(string, row, bar, note, maximum):
-	try:
-		posX = 225*bar + note*(200/(maximum - 1)) + 35
-	except ZeroDivisionError:
-		posX = 225*bar + 135
+	posX = 225*bar + (note + 1)*(225/(maximum + 1)) + 25
 	posY = row*POSITION + SPACE*(row + 1) + string*10 - 5
 	return posX, posY
 
@@ -39,7 +36,7 @@ def paintCell(image, position):
 def paintTabs(image, data):
 	for row in range(len(data)):
 		for bar in range(len(data[row])): # max is 4
-			for note in range(len(data[row][bar])): # max is 12
+			for note in range(len(data[row][bar])): # max is 10
 				for (number, string) in data[row][bar][note]:
 					if number is not None and string is not None:
 						posX, posY = handleNote(string, row, bar, note, len(data[row][bar]))
