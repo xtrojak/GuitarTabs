@@ -49,13 +49,13 @@ Boundaries hints:
 3: middle
 """
 def drawComments(image, boundaries, texts):
-	i = 1
+	i = 0
 	step = 50
 	while i < len(texts):
 		posX = step
-		posY = POSITION*((i/4) + 1) + SPACE*(i/4) - 15
-		if texts[i - 1]:
-			paintText(image, posX, posY, texts[i - 1][:33], 'rgb(0,0,0)')
+		posY = POSITION*((i/4) + 1) + SPACE*(i/4) - 33
+		if texts[i]:
+			paintText(image, posX, posY, texts[i][:33], 'rgb(170,170,170)')
 		step = (step + 225)%900
 		i += 1
 
