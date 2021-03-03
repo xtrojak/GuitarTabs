@@ -1,4 +1,3 @@
-from Libraries import *
 from subprocess import call
 from popplerqt4 import Poppler
 import markdown
