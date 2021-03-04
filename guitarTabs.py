@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 import click
 
-from app.libs.Form import SubmitForm
+from app.libs.form import SubmitForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
@@ -19,7 +19,7 @@ def index():
     user_image = url_for('static', filename='pics/front.png')
     if form.validate_on_submit():
         text = form.text.data
-        form.text.data = ''
+        # form.text.data = ''
         user_image = url_for('static', filename='pics/pic.jpg')
     return render_template('index.html', form=form, name=name, user_image=user_image)
 

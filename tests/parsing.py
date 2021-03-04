@@ -1,6 +1,6 @@
 import unittest
 
-from app.libs.Parsing import Parser
+from app.libs.parsing import Parser
 
 TRACK = """4/3.0/6 - 0/3.3/6 - 2/3.0/5 #?
 12/1 12/2 10/1 8/1 8/2 7/1 5/1 5/2 #! Part 1
