@@ -8,9 +8,11 @@ class Image:
     def __init__(self, depth):
         self.size_x = SIZE_X
         self.size_y = handle_depth(depth)
-        self.picture = svgwrite.Drawing(filename='tabs.svg', size=(self.size_x, self.size_y), debug=True)
+        self.picture = svgwrite.Drawing(filename='static/pics/tabs.svg', size=(self.size_x, self.size_y), debug=True)
         self.picture.add(self.picture.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='white'))
+
         self.paint_tab_lines(depth)
+        self.draw_bar_numbers(depth)
 
     # basic functionality
 
@@ -102,7 +104,7 @@ class Image:
         step = 50
         while i < len(texts):
             pos_x = step
-            pos_y = POSITION * ((i / 4) + 1) + SPACE * (i / 4) - 33
+            pos_y = POSITION * ((i // 4) + 1) + SPACE * (i // 4) - 33
             if texts[i]:
                 self.paint_text(pos_x, pos_y, texts[i][:33], 'rgb(170,170,170)')
             step = (step + 225) % 900
@@ -114,7 +116,7 @@ class Image:
             if boundaries[i] != 0:
                 from_x = step
                 to_x = step + 225
-                y = POSITION * ((i / 4) + 1) + SPACE * (i / 4) - 30
+                y = POSITION * ((i // 4) + 1) + SPACE * (i // 4) - 30
                 if boundaries[i] == 1:
                     self.paint_start_boundary(from_x, to_x, y)
                 elif boundaries[i] == 2:
@@ -123,3 +125,12 @@ class Image:
                     self.paint_middle_boundary(from_x, to_x, y)
             step = (step + 225) % 900
             i += 1
+
+
+def draw_picture(data):
+    image = Image(data.depth)
+    image.paint_tabs(data.bars)
+    image.write_title("This title must be custom")
+    image.draw_comments(data.boundaries, data.texts)
+    image.save_image()
+    return True
