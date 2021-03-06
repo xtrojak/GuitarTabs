@@ -4,18 +4,44 @@
 {% block title %}GuitarTabs{% endblock %}
 
 {% block head %}
+<link href="{{ url_for('static',filename='styles/styles.css') }}" rel="stylesheet" type="text/css" />
 {{ super() }}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-6">
-        {{ wtf.quick_form(form) }}
+<form method="POST" action="{{ url_for('index') }}">
+    <div class="grid-container">
+      <div class="input">
+          {{ wtf.form_field(form.text) }}
+      </div>
+      <div class="output">
+          <img src="{{ user_image }}" alt="Output picture">
+      </div>
+      <div class="submit">
+          <div class="submit_button">
+              {{ wtf.form_field(form.submit_button) }}
+          </div>
+          <div class="title">
+              {{ wtf.form_field(form.title) }}
+          </div>
+          <div class="bars">
+              {{ wtf.form_field(form.bars) }}
+          </div>
+      </div>
+      <div class="export">
+
+          <div class="export_pdf">
+              <input type="submit" name="export_pdf" value="Export PDF">
+          </div>
+          <div class="export_svg">
+              <input type="submit" name="export_svg" value="Export SVG">
+          </div>
+          <div class="export_png">
+              <input type="submit" name="export_png" value="Export PNG">
+          </div>
+      </div>
     </div>
-    <div class="col-xs-6">
-        <img src="{{ user_image }}" alt="User Image">
-    </div>
-</div>
+</form>
 {% endblock %}
 
 {% block scripts %}
