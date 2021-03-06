@@ -33,7 +33,7 @@ def index():
             result = parser.parse(text).data
             result = parser.transform(result)
             if result.success:
-                draw_picture(result.data)
+                draw_picture(result.data, form.title.data, form.bars.data)
                 user_image = url_for('static', filename='pics/tabs.svg')
 
     return render_template('index.html', form=form, name=name, user_image=user_image)

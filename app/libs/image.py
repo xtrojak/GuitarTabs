@@ -12,7 +12,6 @@ class Image:
         self.picture.add(self.picture.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='white'))
 
         self.paint_tab_lines(depth)
-        self.draw_bar_numbers(depth)
 
     # basic functionality
 
@@ -127,10 +126,12 @@ class Image:
             i += 1
 
 
-def draw_picture(data):
+def draw_picture(data, title, bar_numbers):
     image = Image(data.depth)
+    if bar_numbers:
+        image.draw_bar_numbers(data.depth)
     image.paint_tabs(data.bars)
-    image.write_title("This title must be custom")
+    image.write_title(title)
     image.draw_comments(data.boundaries, data.texts)
     image.save_image()
     return True
