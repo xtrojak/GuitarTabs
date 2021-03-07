@@ -11,35 +11,20 @@
 {% block content %}
 <form method="POST" action="{{ url_for('index') }}">
     <div class="grid-container">
-      <div class="input">
-          {{ wtf.form_field(form.text) }}
-      </div>
-      <div class="output">
-          <img src="{{ user_image }}" alt="Output picture">
-      </div>
-      <div class="submit">
-          <div class="submit_button">
-              {{ wtf.form_field(form.submit_button) }}
-          </div>
-          <div class="title">
-              {{ wtf.form_field(form.title) }}
-          </div>
-          <div class="bars">
-              {{ wtf.form_field(form.bars) }}
-          </div>
-      </div>
-      <div class="export">
-
-          <div class="export_pdf">
-              <input type="submit" name="export_pdf" value="Export PDF">
-          </div>
-          <div class="export_svg">
-              <input type="submit" name="export_svg" value="Export SVG">
-          </div>
-          <div class="export_png">
-              <input type="submit" name="export_png" value="Export PNG">
-          </div>
-      </div>
+        <div class="editor">
+            {{ wtf.form_field(form.text) }}
+            <div class="picture">
+                <img src="{{ user_image }}" alt="Output picture">
+            </div>
+        </div>
+        <div class="options">
+            {{ wtf.form_field(form.submit_button) }}
+            {{ wtf.form_field(form.title) }}
+            {{ wtf.form_field(form.bars) }}
+            <input class="btn btn-default" type="submit" name="export_pdf" value="Export PDF">
+            <input class="btn btn-default" type="submit" name="export_svg" value="Export SVG">
+            <input class="btn btn-default" type="submit" name="export_png" value="Export PNG">
+        </div>
     </div>
 </form>
 {% endblock %}
