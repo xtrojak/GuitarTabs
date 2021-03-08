@@ -21,9 +21,9 @@
             {{ wtf.form_field(form.submit_button) }}
             {{ wtf.form_field(form.title) }}
             {{ wtf.form_field(form.bars) }}
-            <input class="btn btn-default" type="submit" name="export_pdf" value="Export PDF">
-            <input class="btn btn-default" type="submit" name="export_svg" value="Export SVG">
-            <input class="btn btn-default" type="submit" name="export_png" value="Export PNG">
+            <a href="/export/PDF"><input class="btn btn-default" type="button" name="export_pdf" value="Export PDF"></a>
+            <a href="/export/SVG"><input class="btn btn-default" type="button" name="export_svg" value="Export SVG"></a>
+            <a href="/export/PNG"><input class="btn btn-default" type="button" name="export_png" value="Export PNG"></a>
         </div>
     </div>
 </form>
