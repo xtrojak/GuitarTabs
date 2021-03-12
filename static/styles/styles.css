@@ -21,8 +21,6 @@ html, body {
   gap: 0px 0px;
   grid-area: 1 / 1 / 2 / 2;
   width: 100%;
-  position: fixed;
-  top: 10px;
   height: 90%;
 }
 
@@ -50,15 +48,6 @@ textarea {
 .picture {
     max-height: 90%;
     overflow-y: scroll;
-}
-
-.form-group {
-    width: 100%;
-}
-
-label {
-float: left;
-margin-right: 1em;
 }
 
 img {

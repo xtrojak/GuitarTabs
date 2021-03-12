@@ -17,6 +17,6 @@ def validate_length(form, field):
 
 class SubmitForm(FlaskForm):
     text = wtforms.TextAreaField(label="", validators=[wtforms.validators.DataRequired(), validate_length])
-    submit_button = wtforms.SubmitField(label="Translate")
+    submit_button = wtforms.SubmitField(label="COMPILE")
     title = wtforms.StringField(label="Title:")
     bars = wtforms.BooleanField(label="Draw bars numbers")
