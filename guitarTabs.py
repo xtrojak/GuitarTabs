@@ -1,21 +1,23 @@
-from flask import Flask, render_template, url_for, request, send_file
+from flask import Flask, render_template, url_for, request, send_file, redirect, session
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from wtforms import ValidationError
 import click
 
 from app.libs.constants import FILE_TYPES, OUTPUT_MIMES
-from app.libs.form import SubmitForm
 from app.libs.image import draw_picture
-from app.libs.parsing import Parser
+from app.libs.parsing import parser, validate_syntax
+
+CODEMIRROR_LANGUAGES = ['python', 'html']
+WTF_CSRF_ENABLED = True
+SECRET_KEY = 'hard to guess string'
+SEND_FILE_MAX_AGE_DEFAULT = 0
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
+app.config.from_object(__name__)
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
-parser = Parser()
 
 
 @app.route("/export/<file_type>")
@@ -26,21 +28,32 @@ def export(file_type):
                      as_attachment=True, attachment_filename="tabs.{}".format(file_type.lower()))
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    name = None
-    form = SubmitForm()
-    user_image = url_for('static', filename='pics/blank.svg')
-    if form.is_submitted():
-        form.validate()
-        text = form.text.data
-        result = parser.parse(text).data
-        result = parser.transform(result)
-        if result.success:
-            draw_picture(result.data, form.title.data, form.bars.data)
-            user_image = url_for('static', filename='pics/tabs.svg')
+@app.route('/compile', methods=['POST'])
+def compile():
+    text = request.form['code_area']
+    session['area_content'] = text
+    try:
+        # raises exception if not OK
+        data = validate_syntax(text)
+        result = parser.transform(data)
 
-    return render_template('index.html', form=form, name=name, user_image=user_image)
+        use_bars = True if 'bars' in request.form else False
+        title = request.form['title']
+
+        if result.success:
+            draw_picture(result.data, title, use_bars)
+            session['user_image'] = url_for('static', filename='pics/tabs.svg')
+    except ValidationError as e:
+        print(e)
+
+    return redirect(url_for('index'))
+
+
+@app.route('/', methods=['GET'])
+def index():
+    user_image = session.get('user_image', url_for('static', filename='pics/blank.svg'))
+    area_content = session.get('area_content', '')
+    return render_template('index.html', user_image=user_image, area_content=area_content)
 
 
 @app.cli.command()

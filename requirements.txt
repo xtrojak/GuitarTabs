@@ -1,0 +1,4 @@
+apt-get install -y python3-flask
+python3 -m pip install Flask Flask-Bootstrap Flask-Mail Flask-Migrate Flask-Moment Flask-WTF \
+                       alembic blinker click dominate six SQLAlchemy visitor Werkzeug WTForms numpy \
+                       requests cairosvg lark lark-parser

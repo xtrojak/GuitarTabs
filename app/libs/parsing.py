@@ -1,5 +1,6 @@
 from lark import Lark, Transformer, Tree, exceptions
 from lark import UnexpectedCharacters, UnexpectedToken
+from wtforms import ValidationError
 
 from app.libs.utils import SizeException
 
@@ -125,7 +126,7 @@ class SizeChecker(Transformer):
     def section(self, matches):
         if len(matches) > 4:
             raise SizeException("Too many bars in one line (the maximum is 4).")
-        return Tree("lines", matches)
+        return Tree("section", matches)
 
 
 class Parser:
@@ -160,3 +161,16 @@ class Parser:
                                   "expected": u.expected,
                                   "line": u.line, "column": u.column})
         return Result(True, tree)
+
+
+def validate_syntax(text):
+    result = parser.parse(text)
+    if not result.success:
+        raise ValidationError(result.data)
+    result = parser.check_size(result.data)
+    if not result.success:
+        raise ValidationError(result.data)
+    return result.data
+
+
+parser = Parser()

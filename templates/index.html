@@ -4,6 +4,8 @@
 {% block title %}SimpleTabs{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}">
+<script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
 {{ super() }}
 {% endblock %}
 
@@ -45,16 +47,21 @@
         </li>
       </ul>
         <!-- TODO - add Vertical Separator -->
-
-        <form class="navbar-nav" method="post" action="/">
-            {{ wtf.form_field(form.submit_button) }}
-        </form>
+        <input class="btn btn-default navbar-nav" id="submit_button" name="submit_button"
+               type="submit" value="COMPILE" form="submit_form">
 
       <form class="navbar-form navbar-left">
-        {{ wtf.form_field(form.title) }}
+        <div class="form-group ">
+            <label class="control-label" for="title">Title:</label>
+            <input class="form-control" id="title" name="title" type="text" value="" form="submit_form">
+        </div>
       </form>
         <div class="navbar-nav">
-            {{ wtf.form_field(form.bars) }}
+           <div class="checkbox">
+              <label>
+                <input id="bars" name="bars" type="checkbox" value="y" form="submit_form"> Draw bars numbers
+              </label>
+           </div>
         </div>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -68,16 +75,24 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-<form method="POST" action="{{ url_for('index') }}">
-    <div class="grid-container">
-        <div class="editor">
-            {{ wtf.form_field(form.text) }}
-            <div class="picture">
-                <img src="{{ user_image }}" alt="Output picture">
-            </div>
-        </div>
+
+<div class="grid-container">
+    <div class="editor">
+        <form id="submit_form" method="POST" action="{{ url_for('compile') }}">
+            <textarea id=text name="code_area">{{ area_content }}</textarea>
+        </form>
+        <script>
+            var editor = CodeMirror.fromTextArea(document.getElementById("text"), {
+              lineNumbers: true,
+              mode: "text/html",
+              matchBrackets: true
+            });
+        </script>
     </div>
-</form>
+    <div class="picture">
+        <img src="{{ user_image }}" alt="Output picture">
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
