@@ -54,13 +54,13 @@
       <form class="navbar-form navbar-left">
         <div class="form-group ">
             <label class="control-label" for="title">Title:</label>
-            <input class="form-control" id="title" name="title" type="text" value="" form="submit_form">
+            <input class="form-control" id="title" name="title" type="text" value="{{ title }}" form="submit_form">
         </div>
       </form>
         <div class="navbar-nav">
            <div class="checkbox">
               <label>
-                <input id="bars" name="bars" type="checkbox" value="y" form="submit_form"> Draw bars numbers
+                <input id="bars" name="bars" type="checkbox" form="submit_form" {{ checked }}> Draw bars numbers
               </label>
            </div>
         </div>

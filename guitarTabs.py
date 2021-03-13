@@ -38,7 +38,9 @@ def compile():
         result = parser.transform(data)
 
         use_bars = True if 'bars' in request.form else False
+        session['checked'] = 'checked' if use_bars else ''
         title = request.form['title']
+        session['title'] = title
 
         if result.success:
             draw_picture(result.data, title, use_bars)
@@ -53,7 +55,10 @@ def compile():
 def index():
     user_image = session.get('user_image', url_for('static', filename='pics/blank.svg'))
     area_content = session.get('area_content', '')
-    return render_template('index.html', user_image=user_image, area_content=area_content)
+    title = session.get('title', '')
+    checked = session.get('checked', '')
+    return render_template('index.html', user_image=user_image, area_content=area_content,
+                           title=title, checked=checked)
 
 
 @app.cli.command()
