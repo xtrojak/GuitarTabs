@@ -4,6 +4,7 @@
 {% block title %}SimpleTabs{% endblock %}
 
 {% block head %}
+<link href="{{ url_for('static', filename='styles/styles.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}">
 <script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
 {{ super() }}
@@ -76,8 +77,8 @@
 </nav>
 
 
-<div class="grid-container">
-    <div class="editor">
+<div id="wrapper">
+    <div id="editor">
         <form id="submit_form" method="POST" action="{{ url_for('compile') }}">
             <textarea id=text name="code_area">{{ area_content }}</textarea>
         </form>
@@ -85,11 +86,11 @@
             var editor = CodeMirror.fromTextArea(document.getElementById("text"), {
               lineNumbers: true,
               mode: "text/html",
-              matchBrackets: true
+              viewportMargin: Infinity
             });
         </script>
     </div>
-    <div class="picture">
+    <div id="output">
         <img src="{{ user_image }}" alt="Output picture">
     </div>
 </div>

@@ -1,56 +1,26 @@
-html, body {
-  height: 100%;
-  width: 100%;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 90% 10%;
-  gap: 0px 0px;
-  margin-right: 1%;
-  margin-left: 1%;
-  height: 100%;
-  width: 100%;
-}
-
-.editor {
-  display: grid;
-  grid-template-columns: 30% 70%;
-  grid-template-rows: 100%;
-  gap: 0px 0px;
-  grid-area: 1 / 1 / 2 / 2;
-  width: 100%;
-  height: 90%;
-}
-
-.options {
-  display: grid;
-  grid-template-columns: 10% 35% 20% 5% 5% 5% 5%;
-  grid-template-rows: 100%;
-  justify-items: center;
-  align-items: center;
-  gap: 10px 15px;
-  grid-area: 2 / 1 / 3 / 2;
-  width: 100%;
-  position: fixed;
-  bottom: 10px;
-  height: 10%;
-}
-
-
-textarea {
-   resize: vertical;
-   max-width: 100%;
-   max-height: 90%;
-}
-
-.picture {
-    max-height: 90%;
-    overflow-y: scroll;
-}
-
-img {
+#wrapper {
     width: 100%;
-    object-fit: contain;
+    overflow: auto;
+}
+
+#editor {
+    width: 48.5%;
+    display: inline-block;
+    height: 100%;
+}
+#output {
+    width: 51%;
+    vertical-align: top;
+    display: inline-block;
+    max-height: 93vh;
+    overflow: scroll;
+}
+
+#submit_form {
+    height: 100%
+}
+
+nav.navbar {
+    height: 5vh;
+    margin-bottom: 0;
 }
