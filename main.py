@@ -1,8 +1,10 @@
 import os
 import click
 from app import create_app
+from app.libs.templating import create_info_template
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+create_info_template()
 
 
 @app.cli.command()
