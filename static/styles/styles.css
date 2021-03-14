@@ -13,14 +13,34 @@
     vertical-align: top;
     display: inline-block;
     max-height: 93vh;
-    overflow: scroll;
+    overflow: auto;
 }
 
-#submit_form {
-    height: 100%
+#submit_button {
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 nav.navbar {
     height: 5vh;
     margin-bottom: 0;
+}
+
+.bar-checkbox {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.bar-checkbox label {
+    margin-bottom: 0px;
+}
+
+input#bars {
+    margin-top: 0px;
+    vertical-align:middle;
+}
+
+#info {
+    margin-top: 8px;
+    margin-bottom: 12px;
 }

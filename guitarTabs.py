@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, send_file, redirect, session
+from flask import Flask, render_template, url_for, request, send_file, redirect, session, flash
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from wtforms import ValidationError
@@ -18,6 +18,12 @@ app.config.from_object(__name__)
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+
+
+@app.route("/info")
+def info():
+    # TBD
+    return redirect(url_for('index'))
 
 
 @app.route("/export/<file_type>")

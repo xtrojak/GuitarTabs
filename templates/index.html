@@ -4,6 +4,7 @@
 {% block title %}SimpleTabs{% endblock %}
 
 {% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
 <link href="{{ url_for('static', filename='styles/styles.css') }}" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}">
 <script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
@@ -21,7 +22,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">SimpleTabs</a>
+      <a class="navbar-brand" href="/">SimpleTabs</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -51,19 +52,16 @@
         <input class="btn btn-default navbar-nav" id="submit_button" name="submit_button"
                type="submit" value="COMPILE" form="submit_form">
 
-      <form class="navbar-form navbar-left">
+      <form id="tab-title" class="navbar-form navbar-left">
         <div class="form-group ">
             <label class="control-label" for="title">Title:</label>
             <input class="form-control" id="title" name="title" type="text" value="{{ title }}" form="submit_form">
         </div>
       </form>
-        <div class="navbar-nav">
-           <div class="checkbox">
-              <label>
-                <input id="bars" name="bars" type="checkbox" form="submit_form" {{ checked }}> Draw bars numbers
-              </label>
-           </div>
-        </div>
+      <div class="navbar-left bar-checkbox">
+        <input id="bars" name="bars" type="checkbox" form="submit_form" {{ checked }}/>
+        <label for="bars">Draw bars numbers</label>
+      </div>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
@@ -72,6 +70,13 @@
           </ul>
         </li>
       </ul>
+      <div id="info" class="nav navbar-nav navbar-right">
+        <a href="/info">
+          <button class="btn">
+            <i class="fa fa-info-circle fa-6" aria-hidden="true"></i>
+          </button>
+        </a>
+      </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
