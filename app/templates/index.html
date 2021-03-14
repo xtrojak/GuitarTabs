@@ -71,7 +71,7 @@
         </li>
       </ul>
       <div id="info" class="nav navbar-nav navbar-right">
-        <a href="/info">
+        <a data-toggle="modal" data-target="#modal_readme">
           <button class="btn">
             <i class="fa fa-info-circle fa-6" aria-hidden="true"></i>
           </button>
@@ -82,9 +82,14 @@
 </nav>
 
 
+<div id="modal_readme" class="modal fade" role="dialog">
+This is modal
+</div>
+
+
 <div id="wrapper">
     <div id="editor">
-        <form id="submit_form" method="POST" action="{{ url_for('compile') }}">
+        <form id="submit_form" method="POST" action="{{ url_for('core.compile') }}">
             <textarea id=text name="code_area">{{ area_content }}</textarea>
         </form>
         <script>

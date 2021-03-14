@@ -8,7 +8,7 @@ class Image:
     def __init__(self, depth):
         self.size_x = SIZE_X
         self.size_y = handle_depth(depth)
-        self.picture = svgwrite.Drawing(filename='static/pics/tabs.svg', size=(self.size_x, self.size_y), debug=True)
+        self.picture = svgwrite.Drawing(filename='app/static/pics/tabs.svg', size=(self.size_x, self.size_y), debug=True)
         self.picture.add(self.picture.rect(insert=(0, 0), size=('100%', '100%'), rx=None, ry=None, fill='white'))
 
         self.paint_tab_lines(depth)
