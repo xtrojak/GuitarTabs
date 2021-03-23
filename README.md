@@ -35,12 +35,12 @@ A line is divided into 4 selections, each of them containing up to 8 positions.
 More formally (in EBNF notation):
 
 ```
-    start: line*
-    selection: line+ ("\n")?
-    selection: position+ COMMENT? ("\n")? | COMMENT ("\n")?
-    position: tone ("." tone)* | "-"
-    tone : string "/" bar
-    string : INTEGER
-    bar : INTEGER    
-    COMMENT: "#" ("!" | "?")? /[^\n]/*
+start: line*
+selection: line+ ("\n")?
+selection: position+ COMMENT? ("\n")? | COMMENT ("\n")?
+position: tone ("." tone)* | "-"
+tone : string "/" bar
+string : INTEGER
+bar : INTEGER    
+COMMENT: "#" ("!" | "?")? /[^\n]/*
 ```

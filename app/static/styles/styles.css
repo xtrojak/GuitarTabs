@@ -40,7 +40,7 @@ input#bars {
     vertical-align:middle;
 }
 
-#info {
-    margin-top: 8px;
-    margin-bottom: 12px;
+.modal-content {
+    max-width: 60%;
+    margin: 0 auto;
 }
