@@ -5,11 +5,13 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 
 from config import config
+from .libs.templating import create_info_template
 
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy(session_options={'expire_on_commit': False})
+info_template = create_info_template()
 
 
 def create_app(config_name):

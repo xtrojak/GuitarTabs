@@ -5,8 +5,8 @@ from app.libs.constants import FILE_TYPES, OUTPUT_MIMES
 from app.libs.image import draw_picture
 from app.libs.parsing import parser, validate_syntax
 
-
 from . import main
+from .. import info_template
 
 
 @main.route("/export/<file_type>")
@@ -47,4 +47,4 @@ def index():
     title = session.get('title', '')
     checked = session.get('checked', '')
     return render_template('index.html', user_image=user_image, area_content=area_content,
-                           title=title, checked=checked)
+                           title=title, checked=checked, info=info_template)
