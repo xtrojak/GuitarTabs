@@ -1,3 +1,5 @@
+import json
+
 from flask import render_template, url_for, request, send_file, redirect, session, Blueprint
 from wtforms import ValidationError
 
@@ -7,6 +9,21 @@ from app.libs.parsing import parser, validate_syntax
 
 from . import main
 from .. import info_template
+
+
+@main.route("/parse", methods=['POST'])
+def parse():
+    data = request.get_json()
+    expression = data['expression']
+
+    result = parser.parse(expression)
+    response = {"success": result.success}
+
+    if not result.success:
+        response.update(result.data)
+        response["expected"] = list(response["expected"])
+
+    return json.dumps(response)
 
 
 @main.route("/export/<file_type>")

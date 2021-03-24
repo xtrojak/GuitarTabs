@@ -4,10 +4,16 @@
 {% block title %}SimpleTabs{% endblock %}
 
 {% block head %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"  rel="stylesheet" type="text/css" >
-<link href="{{ url_for('static', filename='styles/styles.css') }}" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" >
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/lint.css') }}" type="text/css">
+
 <script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/custom-lang.js') }}"></script>
+<script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
+<script src="{{ url_for('static', filename='lib/lint.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/custom-lang-lint.js') }}"></script>
 {{ super() }}
 {% endblock %}
 
@@ -103,7 +109,9 @@
         <script>
             var editor = CodeMirror.fromTextArea(document.getElementById("text"), {
               lineNumbers: true,
-              mode: "text/html",
+              mode: "custom-lang",
+              gutters: ["CodeMirror-lint-markers"],
+              lint: true,
               viewportMargin: Infinity
             });
         </script>
