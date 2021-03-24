@@ -30,11 +30,16 @@
                     expected = 'one of "' + response.expected.join(', ') + '"';
                 }
 
-                var start = response.column - 1;
-                var end = start + response.unexpected.length;
+                if (response.unexpected == "newline"){
+                    var start = response.column - 2;
+                    var end = start + 1;
+                 } else {
+                    var start = response.column - 1;
+                    var end = start + response.unexpected.length;
+                 }
 
                 var hint = {
-                  message: 'Unexpected "' + response.unexpected + '", expected ' + expected + ' at position [row: ' + response.line + ', column: ' + response.column + ']',
+                  message: 'Unexpected "' + response.unexpected + '", expected ' + expected,
                   severity: "error",
                   from: CodeMirror.Pos(response.line - 1, start),
                   to: CodeMirror.Pos(response.line - 1, end)

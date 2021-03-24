@@ -1,5 +1,6 @@
 from lark import Lark, Transformer, Tree, exceptions
 from lark import UnexpectedCharacters, UnexpectedToken
+from lark.load_grammar import _TERMINAL_NAMES
 from wtforms import ValidationError
 
 from app.libs.utils import SizeException
@@ -154,13 +155,30 @@ class Parser:
             tree = self.parser.parse(expression.rstrip())
         except UnexpectedCharacters as u:
             return Result(False, {"unexpected": expression[u.pos_in_stream],
-                                  "expected": u.allowed,
+                                  "expected": replace_expected(u.allowed),
                                   "line": u.line, "column": u.column})
         except UnexpectedToken as u:
-            return Result(False, {"unexpected": str(u.token),
-                                  "expected": u.expected,
+            return Result(False, {"unexpected": replace_unexpected(u.token),
+                                  "expected": replace_expected(u.expected),
                                   "line": u.line, "column": u.column})
         return Result(True, tree)
+
+
+def replace_expected(expected: set) -> set:
+    terminals = {"SKIP": "-",
+                 "DOT": ".",
+                 "SLASH": "/",
+                 "COMMENT": "# comment"
+                 }
+    result = set([terminals.get(item, item.lower()) for item in expected])
+    result.discard("$end")
+    return result
+
+
+def replace_unexpected(unexpected):
+    if "\n" in str(unexpected):
+        return "newline"
+    return str(unexpected)
 
 
 def validate_syntax(text):
