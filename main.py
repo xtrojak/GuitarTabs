@@ -15,3 +15,11 @@ def test(test_names):
     else:
         tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
+
+
+@app.cli.command()
+def profile():
+    """Start the application under the code profiler."""
+    from werkzeug.contrib.profiler import ProfilerMiddleware
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app)
+    app.run()
