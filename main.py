@@ -3,6 +3,7 @@ import click
 from app import create_app
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+PATH = app.root_path
 
 
 @app.cli.command()

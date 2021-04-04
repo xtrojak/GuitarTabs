@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import render_template, url_for, request, send_file, redirect, session, Blueprint
 from wtforms import ValidationError
@@ -30,8 +31,11 @@ def parse():
 
 @main.route("/export/<file_type>")
 def export(file_type):
-    FILE_TYPES[file_type](file_obj=open("app/static/pics/tabs.svg"),
-                          write_to="app/static/pics/tabs.{}".format(file_type.lower()))
+    from main import PATH
+    source_file = os.path.join(PATH, 'static', 'pics', 'tabs.svg')
+    target_file = os.path.join(PATH, 'static', 'pics', 'tabs.{}'.format(file_type.lower()))
+    FILE_TYPES[file_type](file_obj=open(source_file),
+                          write_to=target_file)
     return send_file("static/pics/tabs.{}".format(file_type.lower()), mimetype=OUTPUT_MIMES[file_type],
                      as_attachment=True, attachment_filename="tabs.{}".format(file_type.lower()))
 
@@ -51,7 +55,9 @@ def compile():
         session['title'] = title
 
         if result.success:
-            draw_picture(result.data, title, use_bars)
+            from main import PATH
+            path = os.path.join(PATH, 'static', 'pics', 'tabs.svg')
+            draw_picture(result.data, title, use_bars, path)
             session['user_image'] = url_for('static', filename='pics/tabs.svg')
     except ValidationError as e:
         print(e)
