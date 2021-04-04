@@ -14,7 +14,8 @@
 
   function validator(text, options) {
     var xhr = new XMLHttpRequest();
-    var url = "http://127.0.0.1:5000/parse";
+    var host = window.location.host;
+    var url = "http://" + host + "/parse"
     var data = {"expression": text};
     var output = [];
     xhr.open("POST", url, false);
