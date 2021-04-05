@@ -4,7 +4,7 @@ The tool translates tabs in syntax described below to a picture.
 Tabs are displayed in a grid with fixed width. 
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/mathooo/GuitarTabs/master/pics/front.png"><br><br>
+  <img src="https://raw.githubusercontent.com/xtrojak/GuitarTabs/master/app/static/pics/front.png"><br><br>
 </div>
 
 ```python
