@@ -1,0 +1,20 @@
+# This is a basic workflow that is manually triggered
+
+name: Redeploy - Webhook call
+
+# Controls when the action will run.
+on:
+  push:
+    branches:
+      - 'master'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  redeploy:
+    name: Redeploy webhook call
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Deploy docker container webhook
+        uses: joelwmale/webhook-action@master
+        env:
+          WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL  }}
