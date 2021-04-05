@@ -1,0 +1,128 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}SimpleTabs{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" >
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/codemirror.css') }}" type="text/css">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/lint.css') }}" type="text/css">
+
+<script src="{{ url_for('static', filename='lib/codemirror.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/custom-lang.js') }}"></script>
+<script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
+<script src="{{ url_for('static', filename='lib/lint.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/custom-lang-lint.js') }}"></script>
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">SimpleTabs</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+         <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Save</a></li>
+            <li><a href="#">Load</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Import</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Export <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/export/SVG">SVG</a></li>
+            <li><a href="/export/PDF">PDF</a></li>
+            <li><a href="/export/PNG">PNG</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/export/source">Source</a></li>
+          </ul>
+        </li>
+      </ul>
+        <!-- TODO - add Vertical Separator -->
+        <input class="btn btn-default navbar-nav" id="submit_button" name="submit_button"
+               type="submit" value="COMPILE" form="submit_form">
+
+      <form id="tab-title" class="navbar-form navbar-left">
+        <div class="form-group ">
+            <label class="control-label" for="title">Title:</label>
+            <input class="form-control" id="title" name="title" type="text" value="{{ title }}" form="submit_form">
+        </div>
+      </form>
+      <div class="navbar-left bar-checkbox">
+        <input id="bars" name="bars" type="checkbox" form="submit_form" {{ checked }}/>
+        <label for="bars">Draw bars numbers</label>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Login</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div id="info" class="nav navbar-nav navbar-right">
+        <a data-toggle="modal" data-target="#modal_readme">
+          <button class="btn">
+            <i class="fa fa-info-circle fa-6" aria-hidden="true"></i>
+          </button>
+        </a>
+      </div>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+<div id="modal_readme" class="modal fade" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">SimpleTabs</h4>
+        </div>
+        {{ info|safe }}
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="wrapper">
+    <div id="editor">
+        <form id="submit_form" method="POST" action="{{ url_for('core.compile') }}">
+            <textarea id=text name="code_area">{{ area_content }}</textarea>
+        </form>
+        <script>
+            var editor = CodeMirror.fromTextArea(document.getElementById("text"), {
+              lineNumbers: true,
+              mode: "custom-lang",
+              gutters: ["CodeMirror-lint-markers"],
+              lint: true,
+              viewportMargin: Infinity
+            });
+        </script>
+    </div>
+    <div id="output">
+        <img src="{{ user_image }}" alt="Output picture">
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}

@@ -1,0 +1,46 @@
+#wrapper {
+    width: 100%;
+    overflow: auto;
+}
+
+#editor {
+    width: 48.5%;
+    display: inline-block;
+    height: 100%;
+}
+#output {
+    width: 51%;
+    vertical-align: top;
+    display: inline-block;
+    max-height: 93vh;
+    overflow: auto;
+}
+
+#submit_button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+nav.navbar {
+    height: 5vh;
+    margin-bottom: 0;
+}
+
+.bar-checkbox {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.bar-checkbox label {
+    margin-bottom: 0px;
+}
+
+input#bars {
+    margin-top: 0px;
+    vertical-align:middle;
+}
+
+.modal-content {
+    max-width: 60%;
+    margin: 0 auto;
+}
