@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 
 from flask import render_template, url_for, request, send_file, redirect, session, Blueprint
 from wtforms import ValidationError
@@ -10,6 +11,13 @@ from app.libs.parsing import parser, validate_syntax
 
 from . import main
 from .. import info_template
+
+
+@main.before_request
+def register_session():
+    # TODO: how is it mapped to client?
+    if 'uid' not in session:
+        session['uid'] = str(uuid.uuid4())
 
 
 @main.route("/parse", methods=['POST'])
@@ -32,7 +40,7 @@ def parse():
 @main.route("/export/<file_type>")
 def export(file_type):
     from main import PATH
-    source_file = os.path.join(PATH, 'static', 'pics', 'tabs.svg')
+    source_file = os.path.join(PATH, 'static', 'pics', 'tabs_{}.svg'.format(session['uid']))
     target_file = os.path.join(PATH, 'static', 'pics', 'tabs.{}'.format(file_type.lower()))
     FILE_TYPES[file_type](file_obj=open(source_file),
                           write_to=target_file)
@@ -56,9 +64,9 @@ def compile():
 
         if result.success:
             from main import PATH
-            path = os.path.join(PATH, 'static', 'pics', 'tabs.svg')
+            path = os.path.join(PATH, 'static', 'pics', 'tabs_{}.svg'.format(session['uid']))
             draw_picture(result.data, title, use_bars, path)
-            session['user_image'] = url_for('static', filename='pics/tabs.svg')
+            session['user_image'] = url_for('static', filename='pics/tabs_{}.svg'.format(session['uid']))
     except ValidationError as e:
         print(e)
 
