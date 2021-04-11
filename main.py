@@ -1,8 +1,12 @@
 import os
 import click
-from app import create_app
+from app import create_app, db, setup_db
+from flask_migrate import Migrate
+from app.libs.user import User
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+migrate = Migrate(app, db)
+setup_db(app)
 PATH = app.root_path
 
 

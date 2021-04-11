@@ -40,7 +40,23 @@ input#bars {
     vertical-align:middle;
 }
 
-.modal-content {
+.info {
     max-width: 60%;
     margin: 0 auto;
+}
+
+.login {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 30%;
+}
+
+.register {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 50%;
 }

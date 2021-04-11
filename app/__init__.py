@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 from config import config
 from .libs.templating import create_info_template
@@ -12,6 +13,7 @@ mail = Mail()
 moment = Moment()
 db = SQLAlchemy(session_options={'expire_on_commit': False})
 info_template = create_info_template()
+login_manager = LoginManager()
 
 
 def create_app(config_name):
@@ -23,8 +25,15 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
     db.init_app(app)
+    login_manager.init_app(app)
 
     from .core import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
     return app
+
+
+def setup_db(app):
+    app_context = app.app_context()
+    app_context.push()
+    db.create_all()

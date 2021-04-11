@@ -11,6 +11,7 @@ from app.libs.parsing import parser, validate_syntax
 
 from . import main
 from .. import info_template
+from ..libs.user import RegisterForm
 
 
 @main.before_request
@@ -79,5 +80,8 @@ def index():
     area_content = session.get('area_content', '')
     title = session.get('title', '')
     checked = session.get('checked', '')
+
+    register = RegisterForm()
+
     return render_template('index.html', user_image=user_image, area_content=area_content,
-                           title=title, checked=checked, info=info_template)
+                           title=title, checked=checked, info=info_template, register=register)

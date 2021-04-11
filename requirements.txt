@@ -4,6 +4,7 @@ Flask-Mail
 Flask-Migrate
 Flask-Moment
 Flask-WTF
+flask-login
 alembic
 blinker
 click
@@ -20,3 +21,4 @@ lark
 lark-parser
 markdown
 gunicorn
+email_validator
