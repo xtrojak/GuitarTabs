@@ -34,6 +34,9 @@ def create_app(config_name):
 
 
 def setup_db(app):
+    from .libs.user import MyAnonymousUser
+    login_manager.anonymous_user = MyAnonymousUser
+
     app_context = app.app_context()
     app_context.push()
     db.create_all()
