@@ -1,7 +1,8 @@
 import json
 import os
 import flask_login
-from flask import render_template, url_for, request, send_file, redirect, session, Blueprint, flash
+from flask import render_template, url_for, request, send_file, redirect, session, Blueprint, flash, \
+    get_flashed_messages
 from wtforms import ValidationError
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -37,10 +38,13 @@ def register():
     new_user = User(id=flask_login.current_user.get_id(),
                     email=request.form['email'],
                     password=hashed_password)
-    user_manager.register_user(new_user)
 
-    flash('You have successfully registered', 'success')
-
+    success = user_manager.register_user(new_user)
+    if success:
+        flash('You have successfully registered.', 'success')
+    else:
+        flash('User exists, please login.', 'danger')
+        session['show_login_on_page_load'] = True
     return redirect(url_for('core.index'))
 
 
@@ -50,19 +54,18 @@ def login():
         user = user_manager.get_user(request.form['email'])
         if check_password_hash(user.password, request.form['password']):
             session['logged_in'] = True
-            # flash('Logged in successfully.', 'success')
-            print('Logged in successfully.', 'success')
+            flash('Logged in successfully.', 'success')
             # After successful login, redirecting to home page
             return redirect(url_for('core.index'))
         else:
             # if password is in correct, redirect to login page
-            # flash('Password Incorrect', 'Danger')
-            print('Password Incorrect', 'Danger')
-            return redirect(url_for('core.index') + '#modal_login')
+            flash('Password Incorrect', 'danger')
+            session['show_login_on_page_load'] = True
+            return redirect(url_for('core.index'))
     except UserNotFoundException:
-        # flash('Username Incorrect', 'Danger')
-        print('Username Incorrect.', 'Danger')
-        return redirect(url_for('core.index') + '#modal_login')
+        flash('Username Incorrect', 'danger')
+        session['show_register_on_page_load'] = True
+        return redirect(url_for('core.index'))
 
 
 @main.route('/logout', methods=['POST'])
@@ -71,7 +74,7 @@ def logout():
     # user should be an instance of your `User` class
     login_user(user)
 
-    flash('Logged out successfully.',  'success')
+    flash('Logged out successfully.', 'success')
 
     return redirect(url_for('core.index'))
 
@@ -135,8 +138,14 @@ def index():
     area_content = session.get('area_content', '')
     title = session.get('title', '')
     checked = session.get('checked', '')
+    show_login_on_page_load = session.pop('show_login_on_page_load', False)
+    show_register_on_page_load = session.pop('show_register_on_page_load', False)
 
     register_form = RegisterForm()
 
+    print(get_flashed_messages())
+
     return render_template('index.html', user_image=user_image, area_content=area_content,
-                           title=title, checked=checked, info=info_template, register=register_form)
+                           title=title, checked=checked, info=info_template, register=register_form,
+                           show_login_on_page_load=show_login_on_page_load,
+                           show_register_on_page_load=show_register_on_page_load)

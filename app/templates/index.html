@@ -14,6 +14,8 @@
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
 <script src="{{ url_for('static', filename='lib/lint.js') }}"></script>
 <script src="{{ url_for('static', filename='lib/custom-lang-lint.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 {{ super() }}
 {% endblock %}
 
@@ -160,6 +162,25 @@
 {% endblock %}
 
 {% block scripts %}
+
+{% if show_login_on_page_load %}
+<script type="text/javascript">
+$(document).ready(function(){
+  // Show the Modal on load
+  $("#modal_login").modal("show");
+});
+</script>
+{% endif %}
+
+{% if show_register_on_page_load %}
+<script type="text/javascript">
+$(document).ready(function(){
+  // Show the Modal on load
+  $("#modal_register").modal("show");
+});
+</script>
+{% endif %}
+
 {{ super() }}
 {{ moment.include_moment() }}
 {% endblock %}

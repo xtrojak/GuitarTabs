@@ -1,16 +1,25 @@
 <div class="modal-body">
     <div class="column is-4 is-offset-4">
         <div class="box">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" role="alert">
+                          {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <form method="POST" action="/register">
                 <div class="field">
                     <div class="control">
-                        <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                        <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
                     </div>
                 </div>
 
                 <div class="field">
                     <div class="control">
-                        <input class="input is-large" type="password" name="password" placeholder="Password">
+                        <input class="input is-large" type="password" name="password" placeholder="Your Password">
                     </div>
                 </div>
 

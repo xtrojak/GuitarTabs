@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from sqlalchemy.exc import IntegrityError
 from wtforms import StringField, PasswordField, validators, SubmitField
 import uuid
 from flask_login import UserMixin
@@ -16,8 +17,12 @@ class UserManager:
 
     @staticmethod
     def register_user(user):
-        db.session.add(user)
-        db.session.commit()
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return True
+        except IntegrityError:
+            return False
 
     @staticmethod
     def get_user(email):
