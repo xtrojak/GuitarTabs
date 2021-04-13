@@ -64,12 +64,15 @@ class MyAnonymousUser:
     def __init__(self, id=None):
         self.id = str(uuid.uuid4()) if id is None else id
 
+    @property
     def is_active(self):
         return False
 
+    @property
     def is_authenticated(self):
         return False
 
+    @property
     def is_anonymous(self):
         return True
 

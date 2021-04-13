@@ -40,12 +40,12 @@
          <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            {% if not current_user.is_authenticated() %}
-              <li><a href="#">Save</a></li>
-              <li><a href="#">Load</a></li>
+            {% if logged_in %}
+              <li><a href="#" role="button">Save</a></li>
+              <li><a href="#" role="button">Load</a></li>
             {% else %}
-              <li>Save</li>
-              <li>Load</li>
+              <li><a class="muted" disabled="disabled" role="button">Save</a></li>
+              <li><a class="muted" disabled="disabled" role="button">Load</a></li>
             {% endif %}
               <li role="separator" class="divider"></li>
               <li><a href="#">Import</a></li>
@@ -80,12 +80,12 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">User <span class="caret"></span></a>
           <ul class="dropdown-menu">
-           {% if current_user.is_authenticated() %}
-              <li><a data-toggle="modal" data-target="#modal_login">Profile</a></li>
-              <li><a data-toggle="modal" data-target="#modal_register">Logout</a></li>
+           {% if logged_in %}
+              <li><a data-toggle="modal" data-target="#" role="button">Profile</a></li>
+              <li><a href="/logout" role="button">Logout</a></li>
            {% else %}
-              <li><a data-toggle="modal" data-target="#modal_login">Login</a></li>
-              <li><a data-toggle="modal" data-target="#modal_register">Register</a></li>
+              <li><a data-toggle="modal" data-target="#modal_login" role="button">Login</a></li>
+              <li><a data-toggle="modal" data-target="#modal_register" role="button">Register</a></li>
            {% endif %}
           </ul>
         </li>

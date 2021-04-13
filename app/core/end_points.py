@@ -22,7 +22,7 @@ def register_session():
         if flask_login.current_user.is_anonymous:
             user_manager.register_anonymous_user(flask_login.current_user.get_id())
     else:
-        if flask_login.current_user.is_anonymous:
+        if not session.get('logged_in', False):
             try:
                 flask_login.current_user = user_manager.load_anonymous_user(session['uid'])
             except UserNotFoundException:
@@ -42,6 +42,7 @@ def register():
     success = user_manager.register_user(new_user)
     if success:
         flash('You have successfully registered.', 'success')
+        session['logged_in'] = True
     else:
         flash('User exists, please login.', 'danger')
         session['show_login_on_page_load'] = True
@@ -53,6 +54,7 @@ def login():
     try:
         user = user_manager.get_user(request.form['email'])
         if check_password_hash(user.password, request.form['password']):
+            session['uid'] = user.get_id()
             session['logged_in'] = True
             flash('Logged in successfully.', 'success')
             # After successful login, redirecting to home page
@@ -68,14 +70,15 @@ def login():
         return redirect(url_for('core.index'))
 
 
-@main.route('/logout', methods=['POST'])
+@main.route('/logout', methods=['GET'])
 def logout():
-    # Login and validate the user.
-    # user should be an instance of your `User` class
-    login_user(user)
-
+    session.pop('logged_in')
     flash('Logged out successfully.', 'success')
+    return redirect(url_for('core.index'))
 
+
+@main.route('/profile', methods=['GET'])
+def profile():
     return redirect(url_for('core.index'))
 
 
@@ -143,9 +146,11 @@ def index():
 
     register_form = RegisterForm()
 
-    print(get_flashed_messages())
+    print(flask_login.current_user)
+    print('logged in:', session.get('logged_in', False), 'auth:', flask_login.current_user.is_authenticated)
 
     return render_template('index.html', user_image=user_image, area_content=area_content,
                            title=title, checked=checked, info=info_template, register=register_form,
                            show_login_on_page_load=show_login_on_page_load,
-                           show_register_on_page_load=show_register_on_page_load)
+                           show_register_on_page_load=show_register_on_page_load,
+                           logged_in=flask_login.current_user.is_authenticated)
